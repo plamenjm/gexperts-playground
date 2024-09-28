@@ -174,13 +174,18 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, UITypes,
+{$ifNdef GExpertsBPL_NoSizeGrip}
 {$IFDEF GX_DELPHI2007_UP}
   GX_SizeGripHWND,
 {$ENDIF}
+{$endif GExpertsBPL_NoSizeGrip}
   GX_GxUtils, GX_IdeEnhance,
   GX_ConfigurationInfo, GX_EditorExpertManager, GX_MessageBox,
   GX_GExperts, GX_MenuActions, GX_GenericUtils, GX_IdeUtils,
-  GX_OtaUtils, u_dzVclUtils, GX_KbdShortCutBroker, GX_UsageStatistics,
+  GX_OtaUtils, u_dzVclUtils, GX_KbdShortCutBroker,
+{$ifNdef GExpertsBPL_NoStatistics}
+  GX_UsageStatistics,
+{$endif GExpertsBPL_NoStatistics}
   GX_BaseExpert;
 
 procedure SetupGroupBox(Box: TGroupBox; Enable: Boolean);
@@ -459,7 +464,9 @@ end;
 
 procedure TfmConfiguration.btnUsageClick(Sender: TObject);
 begin
+{$ifNdef GExpertsBPL_NoStatistics}
   TfmUsageStatistics.Execute(Self);
+{$endif GExpertsBPL_NoStatistics}
 end;
 
 procedure TfmConfiguration.b_CustomFontForNewFormsClick(Sender: TObject);
@@ -552,6 +559,12 @@ begin
   chkEnhanceBuildEventsDialog.Checked := IdeEnhancements.EnhanceBuildEventsDialog;
   chkEnhanceApplicationSettingsDialog.Checked := IdeEnhancements.EnhanceApplicationSettingsDialog;
   UpdateIdeDialogCheckboxes;
+{$ifdef GExpertsBPL_NoStatistics}
+  btnUsage.Enabled := False;
+{$endif GExpertsBPL_NoStatistics}
+{$ifdef GExpertsBPL_NoMultiline}
+  chkMultiLineTabDockHost.Enabled := False;
+{$endif GExpertsBPL_NoMultiline}
 
   chkCPFontEnabled.Checked := IdeEnhancements.CPFontEnabled;
   FCPFont.Assign(IdeEnhancements.CPFont);
@@ -830,10 +843,12 @@ end;
 procedure TfmConfiguration.FormShow(Sender: TObject);
 begin
   inherited;
+{$ifNdef GExpertsBPL_NoSizeGrip}
 {$IFDEF GX_DELPHI2007_UP}
   if pnlButtons.HandleAllocated then
     GxSetWindowSizeGrip(pnlButtonsRight.Handle, True);
 {$ENDIF}
+{$endif GExpertsBPL_NoSizeGrip}
 end;
 
 type TControlCracker = class(TControl);
@@ -900,6 +915,9 @@ procedure TfmConfiguration.UpdateIdeDialogCheckboxes;
 var
   EnableState: Boolean;
 begin
+{$ifdef GExpertsBPL_NoIdeEnhance}
+  chkEnhanceDialogs.Enabled := False;
+{$endif GExpertsBPL_NoIdeEnhance}
   EnableState := chkEnhanceDialogs.Checked and
                  chkEnhanceDialogs.Enabled;
   chkAllowResize.Enabled := EnableState;

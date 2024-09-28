@@ -723,6 +723,16 @@ procedure GxLogAndShowException(const E: Exception; const Msg: string = '');
 // Log an exception's stack trace to the debug log (with an optional header message)
 procedure GxLogException(const E: Exception; const Msg: string = '');
 
+type TSendDebugMsgType = set of (sdWarn, sdErr, // type
+  sdUnit, sdClass, sdObj, sdProc, sdTry,        // prefix
+  sdEnd, sdBegin, sdAfter, sdBefore, sdWork);   // suffix
+procedure SendDebugMsg(MsgType: TSendDebugMsgType; const Context: string; const Args: array of const; Msg: string = ''); overload;
+procedure SendDebugMsg(MsgType: TSendDebugMsgType; const Context: string); overload;
+procedure SendDebugMsg(MsgType: TSendDebugMsgType; Context: TClass; const Args: array of const; Msg: string = ''); overload;
+procedure SendDebugMsg(MsgType: TSendDebugMsgType; Context: TObject; const Args: array of const; Msg: string = ''); overload;
+procedure SendDebugMsg(Ex: Exception; Context: string = ''); overload;
+procedure SendDebugMsg(Msg: string; const Args: array of const); overload;
+
 // Show an error dialog if the error string is not empty
 function ShowError(const Error: string): Boolean;
 
@@ -4202,6 +4212,94 @@ begin //FI:W519
   {$ENDIF GX_DEBUGLOG}
 end;
 
+procedure SendDebugMsg(MsgType: TSendDebugMsgType; const Context: string; const Args: array of const; Msg: string = '');
+begin
+{$IFOPT D+}
+  var suffix := '';
+  if sdAfter in MsgType then suffix := ' after'
+  else if sdBefore in MsgType then suffix := ' before'
+  else if sdWork in MsgType then suffix := ' ...';
+
+  var prefix := '';
+  if sdUnit in MsgType then begin
+    prefix := '--- ';
+    if sdEnd in MsgType then suffix := '.finalization' + suffix
+    else if sdBegin in MsgType then suffix := '.initialization' + suffix;
+  end
+  else if sdClass in MsgType then begin
+    prefix := '= ';
+    if sdEnd in MsgType then suffix := '.Finalize' + suffix
+    else if sdBegin in MsgType then suffix := '.Initialize' + suffix;
+  end
+  else if sdObj in MsgType then begin
+    prefix := '= ';
+    if sdEnd in MsgType then suffix := '.Destroy' + suffix
+    else if sdBegin in MsgType then suffix := '.Create' + suffix;
+  end
+  else if sdProc in MsgType then begin
+    prefix := '. ';
+    if sdEnd in MsgType then suffix := ' - end' + suffix
+    else if sdBegin in MsgType then suffix := ' - begin' + suffix;
+  end
+  else if sdTry in MsgType then begin
+    prefix := ': ';
+    if sdEnd in MsgType then suffix := ' < finally' + suffix
+    else if sdBegin in MsgType then suffix := ' > try' + suffix;
+  end;
+
+  if Msg <> '' then Msg := ': ' + Msg;
+
+  if sdErr in MsgType then
+    SendDebugError(Format('%s%s%s', [prefix, Context, suffix]) + Format(Msg, Args))
+  else if sdWarn in MsgType then
+    SendDebugWarning(Format('%s%s%s', [prefix, Context, suffix]) + Format(Msg, Args))
+  else
+    SendDebug(Format('%s%s%s', [prefix, Context, suffix]) + Format(Msg, Args));
+{$ENDIF}
+end;
+
+procedure SendDebugMsg(MsgType: TSendDebugMsgType; const Context: string);
+begin
+{$IFOPT D+}
+  SendDebugMsg(MsgType, Context, [], '');
+{$ENDIF}
+end;
+
+procedure SendDebugMsg(MsgType: TSendDebugMsgType; Context: TClass; const Args: array of const; Msg: string = '');
+begin
+{$IFOPT D+}
+  var className := 'nil';
+  if Assigned(Context) then className := Context.UnitName + '.' + Context.ClassName;
+  SendDebugMsg(MsgType + [sdClass], className, Args, Msg);
+{$ENDIF}
+end;
+
+procedure SendDebugMsg(MsgType: TSendDebugMsgType; Context: TObject; const Args: array of const; Msg: string = '');
+begin
+{$IFOPT D+}
+  var name := 'nil';
+  if Assigned(Context) then name := Context.UnitName + '.' + Context.ClassName;
+  if Context is TComponent then name := name + '.' + TComponent(Context).Name;
+  SendDebugMsg(MsgType + [sdObj], name, Args, Msg);
+{$ENDIF}
+end;
+
+procedure SendDebugMsg(Ex: Exception; Context: string = '');
+begin
+{$IFOPT D+}
+  var name := 'nil';
+  if Assigned(Ex) then name := Ex.ClassName + ': ' + Ex.Message;
+  SendDebugMsg([sdErr], Context, [], name);
+{$ENDIF}
+end;
+
+procedure SendDebugMsg(Msg: string; const Args: array of const); overload;
+begin
+{$IFOPT D+}
+  SendDebugMsg([], '', Args, Msg);
+{$ENDIF}
+end;
+
 function ShowError(const Error: string): Boolean;
 begin
   Result := Trim(Error) <> '';
@@ -4961,6 +5059,10 @@ var
   Ver: TOsVersionInfo;
 
 initialization
+{$IFOPT D+}
+  SendSeparator; // One of the first/last units in initialization/finalization order
+{$ENDIF}
+
 {$IFDEF GX_DELPHI_SYDNEY_UP}
   // Delphi 10.4.2 calls CoCreateInstance(CLSID_WICImagingFactory, ...) in the
   // initialization of Vcl.WinXCtrls (through several intermediate calls)
@@ -4999,5 +5101,9 @@ initialization
 
 finalization
   if FLibHandle <> 0 then FreeLibrary(FLibHandle);
+
+{$IFOPT D+}
+  SendSeparator; // One of the very first/last units in initialization/finalization order
+{$ENDIF}
 
 end.

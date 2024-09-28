@@ -7,7 +7,10 @@ interface
 uses
   Windows,
   SysUtils, Classes, Forms, Controls,
-  MenuBar, Menus, Messages, AppEvnts,
+{$IFDEF GX_EnableIdeDockingSupport}
+  MenuBar,
+{$ENDIF GX_EnableIdeDockingSupport}
+  Menus, Messages, AppEvnts,
   u_dzDpiScaleUtils,
   u_dzVclUtils,
   // You must link to the DesignIde package to compile this unit
@@ -31,7 +34,9 @@ type
   TfmIdeDockForm = class(TDockableForm)
 {$ENDIF TrickTheIdeAncestorForm}
   protected
+  {$IFDEF GX_EnableIdeDockingSupport}
     FMenuBar: TMenuBar;
+  {$ENDIF GX_EnableIdeDockingSupport}
     FApplicationEvents: TApplicationEvents;
     FGxHintCustomDataRec: TGxHintCustomDataRec;
     FScaler: TFormDpiScaler;

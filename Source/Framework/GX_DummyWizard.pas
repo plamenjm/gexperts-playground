@@ -1,5 +1,7 @@
 unit GX_DummyWizard;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -30,7 +32,11 @@ uses
 
 function TDummyWizard.GetIDString: string;
 begin
+{$ifdef GExpertsBPL}
+  Result := 'GExpertsBPL.DummyWizard'; // Do not localize.
+{$else GExpertsBPL}
   Result := 'GExperts.DummyWizard'; // Do not localize.
+{$endif GExpertsBPL}
 end;
 
 function TDummyWizard.GetName: string;

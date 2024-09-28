@@ -61,6 +61,17 @@ type
 var
   gblAboutFormClass: TAboutFormClass;
 
+{$ifdef GExpertsBPL}
+// Circular units: gblAboutFormClass is nil in TGExperts.Create (if called from unit initialization)
+// - GX_LibrarySource calls TGExperts.Create
+// - TGExperts.Create needs GX_About.gblAboutFormClass
+// - GX_About needs GX_LibrarySource.GExpertsDllMarker
+// BPL is using package Register, after units initialization. Just in case, moved to GX_About.
+var
+  // used to detect duplicate GExperts.dlls loaded into the same IDE instance
+  GExpertsDllMarker: TComponent = nil;
+{$endif GExpertsBPL}
+
 implementation
 
 {$R *.dfm}
@@ -71,7 +82,10 @@ uses
   SysUtils, Graphics, ToolsApi, Messages,
   u_dzVclUtils,
   GX_GxUtils,
-  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, GX_GetIdeVersion;
+{$IF DECLARED(TfmFeedbackWizard)}
+  GX_FeedbackWizard,
+{$IFEND}
+  GX_GenericUtils, GX_LibrarySource, GX_GetIdeVersion;
 
 const
   DefaultBugEmail = 'https://bugs.dummzeuch.de/';  // Do not localize.
@@ -123,6 +137,11 @@ begin
 
   InitDpiScaler;
   InitFonts;
+
+{$ifdef GExpertsBPL}
+  lblWebPage.Caption := BugEmail;
+  mmoContributors.Lines.Add('plamenjm');
+{$endif GExpertsBPL}
 end;
 
 procedure TfmAbout.InitFonts;
@@ -301,7 +320,11 @@ begin
   VerString := GetVersionStr;
   if GExpertsDllMarker = nil then
     VerString := VerString + ' (duplicate, inactive)';
+{$ifdef GExpertsBPL}
+  AddPluginToSplashScreen(GetSplashIcon, 'CUSTOM! GExpertsBPL', VerString);
+{$else GExpertsBPL}
   AddPluginToSplashScreen(GetSplashIcon, 'GExperts', VerString);
+{$endif GExpertsBPL}
 end;
 
 class function TfmAbout.DoAddToAboutDialog: Integer;
@@ -326,9 +349,15 @@ begin
   Result := -1;
   if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then begin
     Result := AboutBoxServices.AddPluginInfo(
+{$ifdef GExpertsBPL}
+      'GExpertsBPL' + DupeString,
+      'CUSTOM! ' + Desc + #13#10
+      + BugEmail,
+{$else GExpertsBPL}
       'GExperts' + DupeString,
       Desc + #13#10
       + 'https://gexperts.dummzeuch.de',
+{$endif GExpertsBPL}
       GetAboutIcon,
       False,
       '', // leave this empty!
@@ -368,6 +397,11 @@ end;
 {$ENDIF not GX_VER170_up}
 
 initialization
+{$ifdef GExpertsBPL}
+  TfmAbout.SetCustomBuildEmails('https://github.com/plamenjm/', 'https://github.com/plamenjm/');
+  TfmAbout.SetCustomBuildDetails('CUSTOM! GExpertsBPL build as a package.');
+  // See also: Source\Framework\GX_FeedbackWizard.*, Projects\StandAlone\CodeFormatter\DelphiXx102\w_GExpertsFormatterAbout.dfm
+{$endif GExpertsBPL}
   TfmAbout.AddToSplashScreen;
   gblAboutFormClass := TfmAbout;
 

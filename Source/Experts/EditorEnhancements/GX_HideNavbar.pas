@@ -31,7 +31,7 @@ uses
   Controls,
   ExtCtrls,
   GX_OtaUtils,
-  GX_DbugIntf,
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_NTAEditServiceNotifier;
 
 // todo: Since this is no longer an (IDE) expert, don't call it an expert and maybe even move

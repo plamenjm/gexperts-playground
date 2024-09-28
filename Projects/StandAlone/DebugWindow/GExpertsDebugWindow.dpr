@@ -25,6 +25,7 @@ begin
   end;
   Application.ShowMainForm := ConfigInfo.Start;
   Application.Title := 'GExperts Debug Window'; // Do not localize.
+  Application.MainFormOnTaskbar := True;
   Application.CreateForm(TfmDebug, fmDebug);
   Application.Run;
 end.

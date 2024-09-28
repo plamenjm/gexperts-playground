@@ -5,8 +5,13 @@ unit GX_IdeEnhance;
 interface
 
 uses
-  Classes, Graphics, ComCtrls, Menus,
-  GX_MultiLinePalette, GX_MultilineHost, GX_IdeFormEnhancer;
+{$ifNdef GExpertsBPL_NoMultiline}
+  GX_MultiLinePalette, GX_MultilineHost,
+{$endif GExpertsBPL_NoMultiline}
+{$ifNdef GExpertsBPL_NoIdeEnhance}
+  GX_IdeFormEnhancer,
+{$endif GExpertsBPL_NoIdeEnhance}
+  Classes, Graphics, ComCtrls, Menus;
 
 type
   TIdeEnhancements = class(TObject)
@@ -45,8 +50,10 @@ type
     FCPFont: TFont;
     FOldCPFont: TFont;
 
+{$ifNdef GExpertsBPL_NoMultiline}
     FMultiLineTabDockHostManager: TGxMultiLineTabDockHostsManager;
     FMultiLineTabManager: TMultiLineTabManager;
+{$endif GExpertsBPL_NoMultiline}
 
     FIdeFormsAllowResize: Boolean;
     FIdeFormsRememberPosition: Boolean;
@@ -163,11 +170,13 @@ uses
   {$IFDEF MSWINDOWS} VCLEditors, {$ENDIF MSWINDOWS}
   {$IFDEF VER150} Controls, Buttons, {$ENDIF VER150}
   SysUtils, Forms,
-  GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_ConfigurationInfo,
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   GX_IdeSearchPathEnhancer, GX_IdeProjectOptionsEnhancer,
   GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer,
   GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer,
-  GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer;
+  GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer,
+{$endif GExpertsBPL_NoIdeEnhance}
+  GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_ConfigurationInfo;
 
 { TIdeEnhancements }
 
@@ -190,9 +199,9 @@ procedure TIdeEnhancements.Initialize;
 begin
   Assert(Application.MainForm <> nil, 'No MainForm found');
 
-  {$IFOPT D+} SendDebug('Installing IDE Enhancements and loading settings'); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + ': Installing IDE Enhancements and loading settings'); {$ENDIF}
   LoadSettings;
-  {$IFOPT D+} SendDebug('Loaded IDE Enhancement settings'); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + ': Loaded IDE Enhancement settings'); {$ENDIF}
 
   if CPMultiLine then
     InstallMultiLineComponentTabs;
@@ -217,57 +226,75 @@ end;
 
 procedure TIdeEnhancements.SetEnhanceIDEForms(const Value: Boolean);
 begin
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TIDEFormEnhancements.SetEnabled(Value);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetEnhanceInstallPackages(const Value: Boolean);
 begin
   FEnhanceInstallPackages := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TGxIdeInstallPackagesEnhancer.SetEnabled(Value and EnhanceIDEForms);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetEnhanceSearchPath(Value: Boolean);
 begin
   FEnhanceSearchPath := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   Value := Value and EnhanceIDEForms;
   TGxIdeSearchPathEnhancer.SetEnabled(Value);
   TGxIdeProjectOptionsEnhancer.SetEnabled(Value);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetEnhanceToolProperties(const Value: Boolean);
 begin
   FEnhanceToolProperties := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TGxIdeToolPropertiesEnhancer.SetEnabled(Value and EnhanceIDEForms);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetEnhanceBuildEventsDialog(const Value: boolean);
 begin
   FEnhanceBuildEventsDialog := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TGxIdeBuildEventsEnhancer.SetEnabled(Value and EnhanceIDEForms);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetEnhanceApplicationSettingsDialog(const Value: boolean);
 begin
   FEnhanceApplicationSettingsDialog := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TGxIdeApplicationSettingsEnhancer.SetEnabled(Value and EnhanceIDEForms);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetEnhanceDockForms(const Value: Boolean);
 begin
   FEnhanceDockForms := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TGxIdeDockFormEnhancer.SetEnabled(Value and EnhanceIDEForms);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetIdeFormsAllowResize(const Value: Boolean);
 begin
   FIdeFormsAllowResize := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TIDEFormEnhancements.SetAllowResize(Value and EnhanceIDEForms);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetIdeFormsRememberPosition(const Value: Boolean);
 begin
   FIdeFormsRememberPosition := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TIDEFormEnhancements.SetRememberPosition(Value and EnhanceIDEForms);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 destructor TIdeEnhancements.Destroy;
@@ -486,7 +513,9 @@ end;
 procedure TIdeEnhancements.SetAutoCloseMessageWindow(const Value: Boolean);
 begin
   FAutoCloseMessageWindow := Value;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TGxMessageAutoClose.SetEnabled(Value and EnhanceIDEForms, FAutoCloseIgnoreHints, FAutoCloseIgnoreWarnings);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetAutoSave(const Value: Boolean);
@@ -507,14 +536,14 @@ procedure TIdeEnhancements.SetCPMultiLine(Value: Boolean);
 var
   CPTabControl: TTabControl;
 begin
-  {$IFOPT D+} SendDebug('Setting multiline palette to ' + BooleanText(Value)); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + ': Setting multiline palette to ' + BooleanText(Value)); {$ENDIF}
   if FCPMultiLine <> Value then
   begin
     FCPMultiLine := Value;
     CPTabControl := GetComponentPaletteTabControl;
     if CPTabControl = nil then
     begin
-      {$IFOPT D+} SendDebug('Unable to reset OldCPResizeHandler (no tab control)'); {$ENDIF}
+      {$IFOPT D+} SendDebug(ClassName + ': Unable to reset OldCPResizeHandler (no tab control)'); {$ENDIF}
       Exit;
     end;
     if FCPMultiLine then
@@ -770,53 +799,83 @@ begin
   if GetComponentPaletteTabControl = nil then
     Exit;
 
+{$ifNdef GExpertsBPL_NoMultiline}
   if FMultiLineTabManager = nil then
     FMultiLineTabManager := TMultiLineTabManager.Create(GetIdeMainForm);
+{$endif GExpertsBPL_NoMultiline}
 end;
 
 procedure TIdeEnhancements.RemoveMultiLineComponentTabs;
 begin
+{$ifNdef GExpertsBPL_NoMultiline}
   FreeAndNil(FMultiLineTabManager);
+{$endif GExpertsBPL_NoMultiline}
 end;
 
 procedure TIdeEnhancements.SetDefaultMultiLineTabDockHost(const Value: Boolean);
 begin
+{$ifNdef GExpertsBPL_NoMultiline}
   GX_MultilineHost.DefaultToMultiLine := Value;
+{$endif GExpertsBPL_NoMultiline}
 end;
 
 function TIdeEnhancements.GetDefaultMultiLineTabDockHost: Boolean;
 begin
+{$ifdef GExpertsBPL_NoMultiline}
+  Result := False;
+{$else GExpertsBPL_NoMultiline}
   Result := GX_MultilineHost.DefaultToMultiLine;
+{$endif GExpertsBPL_NoMultiline}
 end;
 
 function TIdeEnhancements.GetEnhanceIDEForms: Boolean;
 begin
+{$ifdef GExpertsBPL_NoIdeEnhance}
+  Result := False;
+{$else GExpertsBPL_NoIdeEnhance}
   Result := TIDEFormEnhancements.GetEnabled;
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 function TIdeEnhancements.GetMultiLineTabDockHost: Boolean;
 begin
+{$ifdef GExpertsBPL_NoMultiline}
+  Result := False;
+{$else GExpertsBPL_NoMultiline}
   Result := (FMultiLineTabDockHostManager <> nil);
+{$endif GExpertsBPL_NoMultiline}
 end;
 
 function TIdeEnhancements.GetOIHideDescPane: boolean;
 begin
+{$ifdef GExpertsBPL_NoIdeEnhance}
+  Result := False;
+{$else GExpertsBPL_NoIdeEnhance}
   Result := TGxIdeObjectInspectorEnhancer.GetHideDescriptionPane;
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetOIHideDescPane(const Value: boolean);
 begin
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TGxIdeObjectInspectorEnhancer.SetHideDescriptionPane(Value);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 function TIdeEnhancements.GetOIHideHotCmds: boolean;
 begin
+{$ifdef GExpertsBPL_NoIdeEnhance}
+  Result := False;
+{$else GExpertsBPL_NoIdeEnhance}
   Result :=  TGxIdeObjectInspectorEnhancer.GetHideHotCmds;
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetOIHideHotCmds(const Value: Boolean);
 begin
+{$ifNdef GExpertsBPL_NoIdeEnhance}
   TGxIdeObjectInspectorEnhancer.SetHideHotCmds(Value);
+{$endif GExpertsBPL_NoIdeEnhance}
 end;
 
 procedure TIdeEnhancements.SetMultiLineTabDockHost(const Value: Boolean);
@@ -829,13 +888,17 @@ end;
 
 procedure TIdeEnhancements.InstallMultiLineHostTabs;
 begin
+{$ifNdef GExpertsBPL_NoMultiline}
   if MultilineTabDockHostPossible and (FMultiLineTabDockHostManager = nil) then
     FMultiLineTabDockHostManager := TGxMultiLineTabDockHostsManager.Create;
+{$endif GExpertsBPL_NoMultiline}
 end;
 
 procedure TIdeEnhancements.RemoveMultiLineHostTabs;
 begin
+{$ifNdef GExpertsBPL_NoMultiline}
   FreeAndNil(FMultiLineTabDockHostManager);
+{$endif GExpertsBPL_NoMultiline}
 end;
 
 procedure TIdeEnhancements.SetOICustomFontNames(const Value: Boolean);
@@ -859,7 +922,7 @@ var
 
 function IdeEnhancements: TIdeEnhancements;
 begin
-  {$IFOPT D+} SendDebug('Calling IdeEnhancements'); {$ENDIF D+}
+  //{$IFOPT D+} SendDebug('Calling IdeEnhancements'); {$ENDIF D+} // 'get' function, called multiple times
   Assert(CanCreate, 'CanCreate not set');
 
   if PrivateIdeEnhancements = nil then
@@ -870,14 +933,15 @@ end;
 
 procedure FreeIdeEnhancements;
 begin
-  {$IFOPT D+} SendDebug('FreeIdeEnhancements'); {$ENDIF D+}
+  if not Assigned(PrivateIdeEnhancements) then Exit;
+  {$IFOPT D+} SendDebug('GX_IdeEnhance.FreeIdeEnhancements'); {$ENDIF D+}
   CanCreate := False;
 
   FreeAndNil(PrivateIdeEnhancements);
 end;
 
 initialization
-  {$IFOPT D+} SendDebug('Initializing IDE enhancements unit'); {$ENDIF D+}
+  //{$IFOPT D+} SendDebug('Initializing IDE enhancements unit'); {$ENDIF D+}
 
 finalization
   FreeIdeEnhancements;

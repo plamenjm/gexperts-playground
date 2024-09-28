@@ -1,5 +1,7 @@
 {$INCLUDE 'dzlibjedi.inc'}
 
+{$define GExpertsBPL} // u_dzVclUtils.pas uses DBGrids.pas
+
 {$IFDEF RTL210_UP}
   {$DEFINE HAS_JSON_SUPPORT}
 {$ENDIF}

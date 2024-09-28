@@ -26,7 +26,9 @@ uses
   StdCtrls,
   ExtCtrls,
   Grids,
+{$ifNdef GExpertsBPL}
   DBGrids,
+{$endif GExpertsBPL}
   Buttons,
   Menus,
   Themes,
@@ -176,12 +178,14 @@ function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
 function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
   const _ConstantCols: array of Integer; _RowOffset: Integer; out _RequiredSize: Integer): Boolean; overload;
 
+{$ifNdef GExpertsBPL}
 ///<summary> Resizes the columns of a TDbGrid to fit their contents
 ///          @param Grid is the TCustomDbGrid to work on
 ///          @param Options is a TResizeOptionSet specifying additional options,
 ///                         defaults to an empty set. </summary>
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet = []; _MinWidth: Integer = 100); overload;
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet; _MinWidths: array of Integer); overload;
+{$endif GExpertsBPL}
 
 ///<summary>
 /// Reduce the width of grid columns so there is no horizontal scroll bar.
@@ -192,6 +196,7 @@ procedure TGrid_RestrictToGridWdith(_Grid: TCustomGrid; _ConstantCols: array of 
 
 procedure TStringGrid_AdjustRowHeight(_sg: TStringGrid);
 
+{$ifNdef GExpertsBPL}
 ///<summary>
 /// Adds a column to the TDbGrid
 /// @param Field is the field name
@@ -204,6 +209,7 @@ function TDbGrid_AddColumn(_dbg: TDBGrid; const _Field: string; const _Title: st
 ///<summary>
 /// Returns the value of the protected field VisibleRowCount </summary>
 function TDbGrid_VisibleRowCount(_dbg: TDBGrid): Integer;
+{$endif GExpertsBPL}
 
 ///<summary>
 /// Returns the content of a Grid as a string
@@ -2065,8 +2071,10 @@ end;
 type
   TGridHack = class(TCustomGrid);
 
+{$ifNdef GExpertsBPL}
 type
   TDbGridHack = class(TCustomDbGrid);
+{$endif GExpertsBPL}
 
 function TGrid_GetText(_Grid: TCustomGrid; _IncludeFixed: Boolean = False): string;
 var
@@ -2922,8 +2930,13 @@ var
   ColWidth: Integer;
   ColText: string;
 begin
+{$ifdef GExpertsBPL}
+  if (_Grid.ClassName = 'TCustomDBGrid') or (_Grid.ClassName = 'TDBGrid') then
+    if _Col = 0 then
+{$else GExpertsBPL}
   if TCustomGrid(_Grid) is TCustomDbGrid then
     if (dgIndicator in TDbGridHack(_Grid).Options) and (_Col = 0) then
+{$endif GExpertsBPL}
       Exit; //==>
   ColText := _Grid.GetEditText(_Col, _Row);
   ColWidth := _Grid.Canvas.TextWidth(ColText);
@@ -3137,6 +3150,7 @@ begin
   _sg.DefaultRowHeight := rh + 4;
 end;
 
+{$ifNdef GExpertsBPL}
 function TDbGrid_CalcAdditionalWidth(_Grid: TCustomDbGrid): Integer;
 var
   Grid: TDbGridHack;
@@ -3305,6 +3319,7 @@ function TDbGrid_VisibleRowCount(_dbg: TDBGrid): Integer;
 begin
   Result := TDbGridHack(_dbg).VisibleRowCount;
 end;
+{$endif GExpertsBPL}
 
 function TPageControl_AddTabSheet(_PageControl: TPageControl; const _Caption: string): TTabSheet;
 begin

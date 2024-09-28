@@ -113,7 +113,7 @@ procedure TGxEditorExpertManager.FreeEditorExperts;
 var
   i: Integer;
 begin
-  {$IFOPT D+} SendDebug('Freeing the editor experts'); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + ': Freeing the editor experts'); {$ENDIF}
   if FEditorExpertList <> nil then
   begin
     for i := 0 to FEditorExpertList.Count - 1 do

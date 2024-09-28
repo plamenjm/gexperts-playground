@@ -11,6 +11,8 @@
 
 unit MenuBar;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -30,7 +32,9 @@ type
     property Menu: TMainMenu read FMenu write SetMenu;
   end;
 
+{$ifNdef GExpertsBPL}
 procedure Register;
+{$endif GExpertsBPL}
 
 implementation
 

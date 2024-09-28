@@ -265,6 +265,7 @@ begin
     Settings.WriteString('Debug', 'SavePath', dlgSaveLog.InitialDir);
     Settings.WriteBool('Debug', 'ViewToolBar', ToolBar.Visible);
     Settings.WriteBool('Debug', 'StayOnTop', FStayOnTop);
+    Settings.WriteString('Debug', 'FilePath', Application.ExeName);
   finally
     FreeAndNil(Settings);
   end;
@@ -444,6 +445,8 @@ begin
   FTaskIcon.OnDblClick := TrayIconDblClick;
 
   FAllowClose := False;
+
+  lvMessages.HideSelection := False;
 
   LoadSettings;
 end;

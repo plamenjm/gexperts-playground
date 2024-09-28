@@ -230,6 +230,10 @@ destructor TEditorEnhancements.Destroy;
 begin
   {$IFOPT D+} SendDebug('Destroying Editor Enhancements'); {$ENDIF}
 
+{$ifdef GExpertsBPL_NoIdeEnhance} // create/free - moved from GX_GExperts to GX_EditorEnhancements
+  FreeGXToolBarDropDowns;
+{$endif GExpertsBPL_NoIdeEnhance}
+
   Remove;
 
   FreeAndNil(FNotificationProxy);

@@ -108,7 +108,8 @@ type
     constructor CreateForDirsOnly(const _Mask: string);
     ///<summary>
     /// creates a TSimpleDirEnumerator for enumerating files only </summary>
-    constructor CreateForFilesOnly(const _Mask: string);
+    //constructor CreateForFilesOnly(const _Mask: string);
+    // W1029 Duplicate constructor 'TSimpleDirEnumerator.CreateForFilesOnly' with identical parameters will be inaccessible from C++
     /// <summary>
     /// Destructor, will call FindClose if necessary </summary>
     destructor Destroy; override;
@@ -1324,10 +1325,10 @@ begin
   FMustHaveAttr := [dfaDirectory];
 end;
 
-constructor TSimpleDirEnumerator.CreateForFilesOnly(const _Mask: string);
-begin
-  Create(_Mask, [dfaArchive]);
-end;
+//constructor TSimpleDirEnumerator.CreateForFilesOnly(const _Mask: string);
+//begin
+//  Create(_Mask, [dfaArchive]);
+//end;
 
 destructor TSimpleDirEnumerator.Destroy;
 begin
@@ -1377,7 +1378,7 @@ var
   List: TStringList;
   i: Integer;
 begin
-  enum := TSimpleDirEnumerator.CreateForFilesOnly(_Mask);
+  enum := TSimpleDirEnumerator.Create(_Mask, [dfaArchive]);
   try
     List := TStringList.Create;
     try

@@ -138,7 +138,9 @@ type
 
   end;
 
+{$ifNdef GExpertsBPL}
 procedure Register;
+{$endif GExpertsBPL}
 
 implementation
 

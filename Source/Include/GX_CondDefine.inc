@@ -1,5 +1,11 @@
 { GX_CondDefine.inc }
 
+{$define GExpertsBPL}              // BPL changes - defines per topic
+{$define GExpertsBPL_NoIdeEnhance}
+{$define GExpertsBPL_NoMultiline}  // enhancement
+{$define GExpertsBPL_NoStatistics}
+{$define GExpertsBPL_NoSizeGrip}
+
 // Third-Party Product Defines
 // --------------------------------------------------------------------------
 
@@ -20,7 +26,9 @@
 {$IFNDEF GX_AutomatedBuild}
   // Turn things on we want compiled into GExperts
   // note: SynEdit is now always required
+  {$ifNdef GExpertsBPL}
   {$DEFINE SYNEDIT}
+  {$endif GExpertsBPL}
   {.$DEFINE GX_DEBUGLOG}
 {$ENDIF GX_AutomatedBuild}
 
@@ -170,7 +178,9 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 {$ENDIF}
 
 // Turn on IDE docking support
+{$ifNdef GExpertsBPL}
 {$DEFINE GX_EnableIdeDockingSupport}
+{$endif GExpertsBPL}
 
 {$WARN SYMBOL_PLATFORM OFF}
 {$WARN UNIT_PLATFORM OFF}
@@ -259,7 +269,9 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE UniSynEdit}
   {$DEFINE GX_ENHANCED_EDITOR}
 {$ELSE}
+  {$ifNdef GExpertsBPL}
   GExperts now requires SynEdit.
+  {$endif GExpertsBPL}
 {$ENDIF SYNEDIT}
 
 {$IFOPT B+}

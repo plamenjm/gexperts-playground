@@ -23,7 +23,9 @@ implementation
 uses
   Graphics,
   GX_GetIdeVersion,
-  GX_DbugIntf,
+{$IFDEF DEBUG_GRID_DRAWING}
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
+{$ENDIF}
   u_dzStringUtils;
 
 procedure TStringGrid_DrawCellFixed(_sg: TStringGrid; const _Text: string; const _Rect: TRect;

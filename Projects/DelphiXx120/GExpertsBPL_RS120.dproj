@@ -1,0 +1,214 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <Base>True</Base>
+        <AppType>Package</AppType>
+        <Config Condition="'$(Config)'==''">Debug</Config>
+        <FrameworkType>VCL</FrameworkType>
+        <MainSource>GExpertsBPL_RS120.dpk</MainSource>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <ProjectGuid>{BB29661E-3FA2-4EA6-96EB-0768940BAAB6}</ProjectGuid>
+        <ProjectVersion>20.1</ProjectVersion>
+        <TargetedPlatforms>1</TargetedPlatforms>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
+        <Base>true</Base>
+        <CfgParent>Base</CfgParent>
+        <Base_Win32>true</Base_Win32>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Base>true</Base>
+        <CfgParent>Base</CfgParent>
+        <Cfg_1>true</Cfg_1>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Base>true</Base>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+        <Base>true</Base>
+        <CfgParent>Base</CfgParent>
+        <Cfg_2>true</Cfg_2>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Base>true</Base>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base)'!=''">
+        <SanitizedProjectName>GExpertsBPL_RS120</SanitizedProjectName>
+        <DCC_DcuOutput>..\..\bin\$(MSBuildProjectName)</DCC_DcuOutput>
+        <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;UnicodeRE;$(DCC_Define)</DCC_Define>
+        <DCC_ExeOutput>..\..\bin</DCC_ExeOutput>
+        <DCC_ImageBase>00400000</DCC_ImageBase>
+        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;System.Win;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
+        <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
+        <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
+        <DCC_UnitAlias>GX_IdeDockStandAlone=GX_IdeDock;SynRegExpr=RegExpr;$(DCC_UnitAlias)</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\RegExpr;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UsePackage>rtl;vcl;designide;$(DCC_UsePackage)</DCC_UsePackage>
+        <GenDll>true</GenDll>
+        <Manifest_File>(None)</Manifest_File>
+        <PreBuildEvent>
+            <![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
+call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
+call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"
+call ..\..\source\_CreateGExpertsManifest.cmd
+$(PreBuildEvent)]]>
+        </PreBuildEvent>
+        <GenPackage>true</GenPackage>
+        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+        <DCC_Description>- CUSTOM! GExpertsBPL</DCC_Description>
+        <DCC_BplOutput>$(BDSCOMMONDIR)\Bpl</DCC_BplOutput>
+        <DCC_DcpOutput>..\..\bin\$(MSBuildProjectName)</DCC_DcpOutput>
+        <DCC_HppOutput>..\..\bin\$(MSBuildProjectName)</DCC_HppOutput>
+        <DCC_ObjOutput>..\..\bin\$(MSBuildProjectName)</DCC_ObjOutput>
+        <DCC_BpiOutput>..\..\bin\$(MSBuildProjectName)</DCC_BpiOutput>
+        <VerInfo_Keys>FileVersion=1.0.0.0</VerInfo_Keys>
+        <VerInfo_Locale>2057</VerInfo_Locale>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
+        <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+        <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+        <DCC_Inlining>off</DCC_Inlining>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
+        <DCC_Optimize>False</DCC_Optimize>
+        <DCC_RangeChecking>true</DCC_RangeChecking>
+        <Manifest_File>None</Manifest_File>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <DCC_DebugDCUs>true</DCC_DebugDCUs>
+        <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
+    </PropertyGroup>
+    <ItemGroup>
+        <DelphiCompile Include="$(MainSource)">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="designide.dcp"/>
+        <DCCReference Include="vcl.dcp"/>
+        <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="..\..\source\Framework\GX_About.pas">
+            <Form>fmAbout</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\Framework\GX_ActionBroker.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_Actions.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_BaseExpert.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_BaseForm.pas">
+            <Form>fmBaseForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\Framework\GX_ConfigurationInfo.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_Configure.pas">
+            <Form>fmConfiguration</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Framework\GX_ConfigureExperts.pas">
+            <Form>frConfigureExperts</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_Debug.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_EditorExpert.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_EditorExpertManager.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_Experts.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_GenericClasses.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_GenericUtils.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_GetIdeVersion.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_GExperts.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_GxUtils.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_HintWindow.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
+        <DCCReference Include="..\..\source\IDE\GX_IdeEnhance.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_KbdShortCutBroker.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_LibrarySource.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_MemoEscFix.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_MenuActions.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_MessageBox.pas">
+            <Form>fmGxMessageBox</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_SharedImages.pas">
+            <Form>dmSharedImages</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
+        <DCCReference Include="..\..\source\Framework\GX_PackageSource.pas"/>
+        <BuildConfiguration Include="Base">
+            <Key>Base</Key>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Release">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
+        <Borland.ProjectType>Package</Borland.ProjectType>
+        <BorlandProject>
+            <Delphi.Personality>
+                <Source>
+                    <Source Name="MainSource">GExpertsBPL_RS120.dpk</Source>
+                </Source>
+                <Excluded_Packages/>
+            </Delphi.Personality>
+            <ModelSupport>False</ModelSupport>
+            <Platforms>
+                <Platform value="Win32">True</Platform>
+                <Platform value="Win64">False</Platform>
+            </Platforms>
+        </BorlandProject>
+        <ProjectFileVersion>12</ProjectFileVersion>
+    </ProjectExtensions>
+    <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
+    <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
+    <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
+    <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+    </PropertyGroup>
+</Project>

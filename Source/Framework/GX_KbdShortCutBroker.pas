@@ -670,12 +670,20 @@ function TGxKeyboardBinding.GetDisplayName: string;
 resourcestring
   SDisplayName = 'GExperts Shortcuts';
 begin
+{$ifdef GExpertsBPL}
+  Result := 'GExpertsBPL';
+{$else GExpertsBPL}
   Result := SDisplayName;
+{$endif GExpertsBPL}
 end;
 
 function TGxKeyboardBinding.GetName: string;
 begin
+{$ifdef GExpertsBPL}
+  Result := 'GExpertsBPL';
+{$else GExpertsBPL}
   Result := 'GExperts.' + Self.ClassName; // Do not localize.
+{$endif GExpertsBPL}
 end;
 
 procedure TGxKeyboardBinding.KeyBindingHandler(

@@ -80,8 +80,8 @@ end;
 { TEditorExpert }
 
 constructor TEditorExpert.Create;
-const
-  EditorExpertPrefix = 'EditorExpert'; // Do not localize.
+//const
+//  EditorExpertPrefix = 'EditorExpert'; // Do not localize.
 begin
   inherited Create;
 

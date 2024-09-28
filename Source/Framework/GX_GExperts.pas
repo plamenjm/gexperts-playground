@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, ToolsAPI, Controls, ExtCtrls,
-  GX_EditorExpertManager, GX_Experts;
+  GX_TimedCallback, GX_EditorExpertManager, GX_Experts;
 
 type
   TGExperts = class(TNotifierObject, IOTANotifier, IOTAWizard)
@@ -14,6 +14,7 @@ type
     FEditorExpertsManager: TGxEditorExpertManager;
     FExpertList: TList;
     FStartingUp: Boolean;
+    FTimedInit: TTimedCallback;
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     FLastDesktopName: string;
     procedure ForceStartupDesktop(Sender: TObject);
@@ -73,8 +74,10 @@ uses
   Dialogs, Forms,
   GX_GenericUtils, GX_GetIdeVersion, GX_About, GX_MenuActions, GX_MessageBox,
   GX_ConfigurationInfo, GX_Configure, GX_KbdShortCutBroker, GX_SharedImages,
-  GX_IdeUtils, GX_IdeEnhance, GX_EditorChangeServices, GX_ToolbarDropDown,
-  GX_TimedCallback, GX_ActionBroker;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
+  GX_ToolbarDropDown,
+{$endif GExpertsBPL_NoIdeEnhance}
+  GX_IdeUtils, GX_IdeEnhance, GX_EditorChangeServices, GX_ActionBroker;
 
 type
   TUnsupportedIDEMessage = class(TGxMsgBoxAdaptor)
@@ -112,7 +115,7 @@ end;
 
 procedure FreeSharedResources;
 begin
-  {$IFOPT D+} SendDebug('Freeing shared images'); {$ENDIF}
+  {$IFOPT D+} SendDebug('GX_GExperts.FreeSharedResources'); {$ENDIF}
   FreeAndNil(SharedImages);
 end;
 
@@ -120,14 +123,14 @@ end;
 
 constructor TGExperts.Create;
 begin
-  {$IFOPT D+} SendDebug('TGExperts.Create'); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + '.Create'); {$ENDIF}
   inherited Create;
   FStartingUp := True;
   InitializeGExperts;
 
   // No idea where these 1200 ms came from, but basically it means that the
   // method will be called when the application handles events the first time.
-  TTimedCallback.Create(DoAfterIDEInitialized, 1200, True);
+  FTimedInit := TTimedCallback.Create(DoAfterIDEInitialized, 1200, True);
 
   gblAboutFormClass.AddToAboutDialog;
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
@@ -148,12 +151,12 @@ begin
   GxActionBroker.AddExpertImagesToIde;
 
   // Create the action manager.
-  {$IFOPT D+} SendDebug('Creating GXActionManager'); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + ': Creating GXActionManager'); {$ENDIF}
   CreateGXMenuActionManager;
   try
-    {$IFOPT D+} SendDebug('Installing AddIn'); {$ENDIF}
+    {$IFOPT D+} SendDebug(ClassName + ': Installing AddIn'); {$ENDIF}
     InstallAddIn;
-    {$IFOPT D+} SendDebug('Successfully installed AddIn'); {$ENDIF}
+    {$IFOPT D+} SendDebug(ClassName + ': Successfully installed AddIn'); {$ENDIF}
   except
     on E: Exception do
     begin
@@ -177,13 +180,14 @@ var
   IgnoreDestructionErrors: Boolean;
 begin
   try
-    {$IFOPT D+} SendDebug('Destroying GExperts'); {$ENDIF}
+    {$IFOPT D+} SendDebug(ClassName + ': Destroying GExperts'); {$ENDIF}
+    FTimedInit.Free;
 
     gblAboutFormClass.RemoveFromAboutDialog;
     GxKeyboardShortCutBroker.BeginUpdate;
     try
       try
-        {$IFOPT D+} SendDebug('Destroying Experts'); {$ENDIF}
+        {$IFOPT D+} SendDebug(ClassName + ': Destroying Experts'); {$ENDIF}
         if FExpertList <> nil then
         begin
           IgnoreDestructionErrors := False;
@@ -211,19 +215,21 @@ begin
               end;
             end;
           end;
-          {$IFOPT D+} SendDebug('Done freeing experts'); {$ENDIF}
+          {$IFOPT D+} SendDebug(ClassName + ': Done freeing experts'); {$ENDIF}
           FreeAndNil(FExpertList);
         end;
       finally
         // Release the editor expert manager and the editor experts
-        {$IFOPT D+} SendDebug('Releasing editor expert manager'); {$ENDIF}
+        {$IFOPT D+} SendDebug(ClassName + ': Releasing editor expert manager'); {$ENDIF}
         FreeEditorExperts;
         FreeIdeEnhancements;
         ReleaseEditorChangeServices;
+{$ifNdef GExpertsBPL_NoIdeEnhance} // create/free - moved from GX_GExperts to GX_EditorEnhancements
         FreeGXToolBarDropDowns;
+{$endif GExpertsBPL_NoIdeEnhance}
 
         // Free the action manager and remove any registered keybindings
-        {$IFOPT D+} SendDebug('Freeing Action manager'); {$ENDIF}
+        {$IFOPT D+} SendDebug(ClassName + ': Freeing Action manager'); {$ENDIF}
         FreeGXMenuActionManager;
         FreeSharedResources;
       end;
@@ -233,7 +239,7 @@ begin
 
     FPrivateGExpertsInst := nil;
     inherited Destroy;
-    {$IFOPT D+} SendDebug('done Destroying GExperts'); {$ENDIF}
+    {$IFOPT D+} SendDebug(ClassName + ': done Destroying GExperts'); {$ENDIF}
   except
     on E: Exception do
     begin
@@ -296,12 +302,20 @@ end;
 
 function TGExperts.GetIDString: string;
 begin
+{$ifdef GExpertsBPL}
+  Result := 'GExpertsBPL.GExperts'; // Do not localize.
+{$else GExpertsBPL}
   Result := 'GExperts.GExperts'; // Do not localize.
+{$endif GExpertsBPL}
 end;
 
 function TGExperts.GetName: string;
 begin
+{$ifdef GExpertsBPL}
+  Result := 'GExpertsBPL'; // Do not localize.
+{$else GExpertsBPL}
   Result := 'GExperts'; // Do not localize.
+{$endif GExpertsBPL}
 end;
 
 function TGExperts.GetSharedImages: TImageList;
@@ -403,6 +417,8 @@ procedure TGExperts.DoAfterIDEInitialized(Sender: TObject);
 var
   i: Integer;
 begin
+  {$IFOPT D+} SendDebug(ClassName + '.DoAfterIDEInitialized'); {$ENDIF}
+  FTimedInit := nil; // _FreeAfterCallback = True
   FStartingUp := False;
   for i := 0 to FExpertList.Count - 1 do
     ExpertList[i].AfterIDEInitialized;
@@ -445,6 +461,7 @@ procedure TGExperts.OnCloseMessageViewTimer(_Sender: TObject);
 var
   Timer: TTimer;
 begin
+  {$IFOPT D+} SendDebug(ClassName + '.OnCloseMessageViewTimer'); {$ENDIF}
   try
     Timer := _Sender as TTimer;
     Timer.Enabled := False;

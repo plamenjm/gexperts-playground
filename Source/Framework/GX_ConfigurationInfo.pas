@@ -278,7 +278,10 @@ uses
   u_dzVclUtils,
   GX_MessageBox, // todo: remove UI from the configuration
   GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils, GX_VerDepConst,
-  GX_BaseForm, GX_IdeDock, GX_GxUtils;
+{$ifNdef GExpertsBPL_NoIdeEnhance}
+  GX_IdeDock,
+{$endif GExpertsBPL_NoIdeEnhance}
+  GX_BaseForm, GX_GxUtils;
 
 type
   TConfigInfo = class(TSingletonInterfacedObject, IConfigInfo)
@@ -539,7 +542,7 @@ end;
 constructor TConfigInfo.Create;
 begin
   // Don't do anything significant here, because this gets recreated many times
-  {$IFOPT D+} SendDebug('Creating configuration info'); {$ENDIF D+}
+  {$IFOPT D+} SendDebug(ClassName + ': Creating configuration info'); {$ENDIF D+}
   inherited Create;
   FPrivateConfigurationInfo := Self;
 {$IFNDEF GX_STANDALONE}
@@ -571,7 +574,7 @@ end;
 
 destructor TConfigInfo.Destroy;
 begin
-  {$IFOPT D+} SendDebug('TConfigInfo.Destroy'); {$ENDIF D+}
+  {$IFOPT D+} SendDebug(ClassName + '.Destroy'); {$ENDIF D+}
   //SaveSettings; // Call this below to prevent re-creating TConfigInfo
 {$IFNDEF GX_STANDALONE}
   FreeAndNil(FCustomFont);
@@ -584,7 +587,7 @@ procedure TConfigInfo.LoadSettings;
 var
   Settings: TGExpertsSettings;
 begin
-  {$IFOPT D+} SendDebug('Loading configuration info settings'); {$ENDIF D+}
+  {$IFOPT D+} SendDebug(ClassName + ': Loading configuration info settings'); {$ENDIF D+}
 
   // Do not localize any of the following strings.
   Settings := TGExpertsSettings.Create;
@@ -835,7 +838,11 @@ begin
   for i := 0 to Screen.FormCount - 1 do
   begin
     Form := Screen.Forms[i];
+{$ifdef GExpertsBPL_NoIdeEnhance}
+    if (Form is TfmBaseForm) or (Form.ClassName = 'TfmIdeDockForm') then begin
+{$else GExpertsBPL_NoIdeEnhance}
     if (Form is TfmBaseForm) or (Form is TfmIdeDockForm) then begin
+{$endif GExpertsBPL_NoIdeEnhance}
       if FEnableCustomFont then begin
         Form.Font.Assign(FCustomFont);
       end else begin

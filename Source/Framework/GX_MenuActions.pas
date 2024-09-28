@@ -151,12 +151,21 @@ begin
   //       icon this looks awkward.
   //       The same goes for the Configuration and About dialogs. These might be useful as buttons
   //       on a tool bar but they don't have an icon either.
+{$ifdef GExpertsBPL}
+  FMoreAction := GxActionBroker.RequestAction('GExpertsBPL_MoreAction', nil); // Do not localize.
+{$else GExpertsBPL}
   FMoreAction := GxActionBroker.RequestAction('GExpertsMoreAction', nil); // Do not localize.
+{$endif GExpertsBPL}
   FMoreAction.Caption := 'More';
   FMoreAction.OnExecute := MoreActionExecute;
 
+{$ifdef GExpertsBPL}
+  FGExpertsTopLevelMenu.Caption := '&GExp'; // Do not localize.
+  FGExpertsTopLevelMenu.Name := 'GExpertsBPL'; // Do not localize.
+{$else GExpertsBPL}
   FGExpertsTopLevelMenu.Caption := 'GE&xperts'; // Do not localize.
   FGExpertsTopLevelMenu.Name := 'GExperts'; // Do not localize.
+{$endif GExpertsBPL}
 
   // Now insert three menu items that are always appended to
   // the GExperts main menu item.
@@ -169,8 +178,13 @@ begin
   FGExpertsTopLevelMenu.Add(Separator);
 
   // Add hard-coded actions.
+{$ifdef GExpertsBPL}
+  FConfigAction := CreateAction(SGxConfigMenu, 'BPL_Configuration', ConfigClick, nil, 0, ConfigItemTag, 1); // Do not localize.
+  FAboutAction := CreateAction(SGxAboutMenu, 'BPL_About', AboutClick, nil, 0, AboutItemTag, 2); // Do not localize.
+{$else GExpertsBPL}
   FConfigAction := CreateAction(SGxConfigMenu, 'Configuration', ConfigClick, nil, 0, ConfigItemTag, 1); // Do not localize.
   FAboutAction := CreateAction(SGxAboutMenu, 'About', AboutClick, nil, 0, AboutItemTag, 2); // Do not localize.
+{$endif GExpertsBPL}
 
   MainMenu := GxOtaGetIdeMainMenu;
   Assert(Assigned(MainMenu), 'MainMenu component not found');

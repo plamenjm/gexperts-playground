@@ -138,7 +138,7 @@ uses
   u_dzVclUtils,
   GX_GenericUtils,
   GX_GxUtils,
-  GX_DbugIntf,
+  //{$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_PeInfoPrint,
   GX_About;
 
