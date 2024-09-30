@@ -646,7 +646,11 @@ finalization
   // Assert(PrivateGXMenuActionManager = nil, 'PrivateGXMenuActionManager is not nil during finalization');
   // so instead we show a message box.
   if Assigned(PrivateGXMenuActionManager) then
+{$ifdef GExpertsBPL} // Without dialogs in finalization.
+    SendDebugWarning('PrivateGXMenuActionManager is not nil during finalization');
+{$else GExpertsBPL}
     GxDebugShowWarning('PrivateGXMenuActionManager is not nil during finalization');
+{$endif GExpertsBPL}
 {$ENDIF D+}
   // todo: Maybe free it ? Not sure about the consequences. This object holds some interface
   //       references. These might cause trouble now, if free'd here, or later if not.

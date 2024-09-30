@@ -1338,7 +1338,11 @@ finalization
 
 {$IFOPT D+}
   if Assigned(PrivateEditorChangeServices) then
+{$ifdef GExpertsBPL} // Without dialogs in finalization.
+    SendDebugWarning('PrivateEditorChangeServices is not nil during finalization');
+{$else GExpertsBPL}
     GxDebugShowWarning('PrivateEditorChangeServices is not nil during finalization');
+{$endif GExpertsBPL}
 {$ENDIF D+}
   ReleaseEditorChangeServices;
 {$IFOPT D+}

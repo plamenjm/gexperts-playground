@@ -21,15 +21,20 @@ procedure GxDebugShowWarning(const _Msg: string);
 implementation
 
 uses
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Windows
 {$IFNDEF GX_DEBUGLOG}
 ;
 
 procedure GxDebugShowWarning(const _Msg: string);
 begin
+{$ifdef GExpertsBPL} // Without dialogs in finalization.
+    SendDebugWarning(_Msg);
+{$else GExpertsBPL} // Should UNDEF GX_DEBUG_NO_WARNINGS in release?
 {$IFNDEF GX_DEBUG_NO_WARNINGS}
   MessageBox(0, PChar(_msg), 'GExperts Debug Warning', MB_OK or MB_ICONHAND);
 {$ENDIF}
+{$endif GExpertsBPL}
 end;
 
 

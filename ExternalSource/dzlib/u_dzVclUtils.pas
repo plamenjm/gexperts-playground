@@ -2931,7 +2931,7 @@ var
   ColText: string;
 begin
 {$ifdef GExpertsBPL}
-  if (_Grid.ClassName = 'TCustomDBGrid') or (_Grid.ClassName = 'TDBGrid') then
+  if Assigned(_Grid) and ( (_Grid.ClassName = 'TCustomDBGrid') or (_Grid.ClassName = 'TDBGrid') ) then
     if _Col = 0 then
 {$else GExpertsBPL}
   if TCustomGrid(_Grid) is TCustomDbGrid then
@@ -7709,7 +7709,7 @@ end;
 type
   TScreenMonitorCacheFix = class(TWindowProcHook)
   private
-    procedure HandleActiveFormChangedOnce(_Sender: TObject);
+    class procedure HandleActiveFormChangedOnce(_Sender: TObject);
     class function TryInitialize: Boolean; static;
   protected
     procedure NewWindowProc(var _Msg: TMessage); override;
@@ -7736,7 +7736,7 @@ begin
   inherited;
 end;
 
-procedure TScreenMonitorCacheFix.HandleActiveFormChangedOnce(_Sender: TObject);
+class procedure TScreenMonitorCacheFix.HandleActiveFormChangedOnce(_Sender: TObject);
 begin
   // we must not access self here as this event handler is assigned without instantiating the class
   if TryInitialize then begin

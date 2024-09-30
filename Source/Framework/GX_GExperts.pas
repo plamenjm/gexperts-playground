@@ -181,7 +181,7 @@ var
 begin
   try
     {$IFOPT D+} SendDebug(ClassName + ': Destroying GExperts'); {$ENDIF}
-    FTimedInit.Free;
+    FreeAndNil(FTimedInit);
 
     gblAboutFormClass.RemoveFromAboutDialog;
     GxKeyboardShortCutBroker.BeginUpdate;
@@ -422,8 +422,10 @@ begin
   FStartingUp := False;
   for i := 0 to FExpertList.Count - 1 do
     ExpertList[i].AfterIDEInitialized;
+{$ifNdef GExpertsBPL} // Looks like it works. Is it needed?
   if RunningDelphi8OrGreater then
     GxKeyboardShortCutBroker.DoUpdateKeyBindings(True);
+{$endif GExpertsBPL}
 
   GXMenuActionManager.MoveMainMenuItems;
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}

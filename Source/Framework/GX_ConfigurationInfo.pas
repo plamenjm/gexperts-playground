@@ -839,7 +839,7 @@ begin
   begin
     Form := Screen.Forms[i];
 {$ifdef GExpertsBPL_NoIdeEnhance}
-    if (Form is TfmBaseForm) or (Form.ClassName = 'TfmIdeDockForm') then begin
+    if (Form is TfmBaseForm) or ( Assigned(Form) and (Form.ClassName = 'TfmIdeDockForm') ) then begin
 {$else GExpertsBPL_NoIdeEnhance}
     if (Form is TfmBaseForm) or (Form is TfmIdeDockForm) then begin
 {$endif GExpertsBPL_NoIdeEnhance}

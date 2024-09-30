@@ -83,7 +83,7 @@ uses
   ToolsAPI,
   Rescaler,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_KbdShortCutBroker,
+  GX_TimedCallback, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_KbdShortCutBroker,
   GX_GenericClasses, GX_GenericUtils, Controls, GX_Experts,
   GX_EditorExpert, GX_BaseExpert;
 
@@ -92,18 +92,27 @@ type
   TGxMenuAction = class(TGxCustomAction, IUnknown, IGxAction, IGxMenuAction)
   private
     FAssociatedMenuItem: TMenuItem;
+    FTimedValue: TShortCut;
+    FTimedSet: TTimedCallback;
+    procedure DoSetShortCut(Sender: TObject);
     procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
   protected
     function GetAssociatedMenuItem: TMenuItem;
   public
     constructor Create(_Owner: TComponent; const _Name: string); reintroduce;
+    destructor Destroy; override;
   end;
 
 type
   TGxToolsAction = class(TGxCustomAction, IUnknown, IGxAction)
   private
+    FTimedValue: TShortCut;
+    FTimedSet: TTimedCallback;
+    procedure DoSetShortCut(Sender: TObject);
     procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
     procedure doOnExecute(Sender: TObject);
+  public
+    destructor Destroy; override;
   end;
 
 type
@@ -360,7 +369,11 @@ begin
 
     NTAServices := BorlandIDEServices as INTAServices;
     Assert(Assigned(NTAServices));
+{$ifdef GExpertsBPL}
+    FImageIndexBase := NTAServices.AddImages(il, 'GExpertsBPL');
+{$else GExpertsBPL}
     FImageIndexBase := NTAServices.AddImages(il, 'GExperts');
+{$endif GExpertsBPL}
   finally
     FreeAndNil(il);
   end;
@@ -470,6 +483,12 @@ begin
   FAssociatedMenuItem.Action := Self;
 end;
 
+destructor TGxMenuAction.Destroy;
+begin
+  FreeAndNil(FTimedSet);
+  inherited;
+end;
+
 function TGxMenuAction.GetAssociatedMenuItem: TMenuItem;
 begin
   Result := FAssociatedMenuItem;
@@ -477,6 +496,19 @@ end;
 
 procedure TGxMenuAction.SetShortCut(Value: TShortCut);
 begin
+  // RAD Studio 12.1: IOTAKeyboardBinding.BindKeyboard is received when another 'ToolsApi' package is re-build (Unload/Install).
+  // This case is not handled in GX_KbdShortCutBroker.pas and 'GExperts' disappear from 'Tools/Editor/Key Mappings'.
+  // Then Action ShortCut is first cleared (nil) then re-assigned - the check below fails: if (ShortCut <> Value) ...
+  // Fix by using timed callback for updating the ShortCut.
+  FreeAndNil(FTimedSet);
+  FTimedValue := Value;
+  FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
+end;
+
+procedure TGxMenuAction.DoSetShortCut(Sender: TObject);
+begin
+  var Value := FTimedValue;
+  FTimedSet := nil;
   if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then
     IdeShortCut := nil;  // Unregisters the shortcut with the IDE
 
@@ -495,6 +527,12 @@ end;
 
 { TGxToolsAction }
 
+destructor TGxToolsAction.Destroy;
+begin
+  FreeAndNil(FTimedSet);
+  inherited;
+end;
+
 procedure TGxToolsAction.doOnExecute(Sender: TObject);
 begin
   if Assigned(OnExecute) then
@@ -503,6 +541,19 @@ end;
 
 procedure TGxToolsAction.SetShortCut(Value: TShortCut);
 begin
+  // RAD Studio 12.1: IOTAKeyboardBinding.BindKeyboard is received when another 'ToolsApi' package is re-build (Unload/Install).
+  // This case is not handled in GX_KbdShortCutBroker.pas and 'GExperts' disappear from 'Tools/Editor/Key Mappings'.
+  // Then Action ShortCut is first cleared (nil) then re-assigned - the check below fails: if (ShortCut <> Value) ...
+  // Fix by using timed callback for updating the ShortCut.
+  FreeAndNil(FTimedSet);
+  FTimedValue := Value;
+  FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
+end;
+
+procedure TGxToolsAction.DoSetShortCut(Sender: TObject);
+begin
+  var Value := FTimedValue;
+  FTimedSet := nil;
   // Not necessary under Delphi 5/6 since the callbacks never happen anyway
   if RunningDelphi7OrGreater then
   begin

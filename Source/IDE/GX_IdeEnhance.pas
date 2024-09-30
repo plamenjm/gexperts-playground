@@ -944,6 +944,9 @@ initialization
   //{$IFOPT D+} SendDebug('Initializing IDE enhancements unit'); {$ENDIF D+}
 
 finalization
+{$ifdef GExpertsBPL} // Should be freed at this point.
+  if Assigned(PrivateIdeEnhancements) then SendDebugWarning('PrivateIdeEnhancements is not nil during finalization');
+{$endif GExpertsBPL}
   FreeIdeEnhancements;
 end.
 

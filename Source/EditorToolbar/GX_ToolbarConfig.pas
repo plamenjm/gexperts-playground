@@ -263,7 +263,11 @@ begin
         // obviously are not meant to be shown on a tool bar.
         Continue; //==^
       end;
+{$ifdef GExpertsBPL}
+      if StartsStr('FileClose', ActionName) or StrContains('GExpertsBPL_MoreAction', ActionName, False) then begin
+{$else GExpertsBPL}
       if StartsStr('FileClose', ActionName) or StrContains('GExpertsMoreAction', ActionName, False) then begin
+{$endif GExpertsBPL}
         // Close All causes AVs, so we don't allow it.  More/Editor Experts are not useful.
         Continue; //==^
       end;

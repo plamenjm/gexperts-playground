@@ -11,7 +11,11 @@ uses
   GX_KbdShortCutBroker;
 
 const
+{$ifdef GExpertsBPL}
+  GExpertsActionCategory = 'GExpertsBPL';
+{$else GExpertsBPL}
   GExpertsActionCategory = 'GExperts';
+{$endif GExpertsBPL}
 
 type
   { This interface is a rather typical action - except
