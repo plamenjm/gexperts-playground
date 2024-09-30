@@ -6,7 +6,7 @@ A playground. The changes are properly described in the commit messages.
 ---
 ### Summary:
 
-- Empty GExperts, only the framework, build as BPL package.
+- Empty GExperts, only the framework (and one expert), build as BPL package.
 
     You can rebuild and see your changes immediately without restarting RAD Studio.
 
@@ -18,12 +18,19 @@ A playground. The changes are properly described in the commit messages.
 
 ### Ideas:
 
-- Merge 'IDE Menu Shortcuts' and 'Keyboard Shortcuts', plus Delphi Key mappings.
+- Merge 'IDE Menu Shortcuts' and 'Keyboard Shortcuts'. Plus information for Delphi default Key mappings.
 
 
-- Units initialization order and circular references.
+- Reorder Experts - move up/down and sync with the menu items
+
+
+- Uses Clause Manager / Project Dependencies
+
+    Show units initialization order. Show it only for units with 'initialization/finalization' section.
 
     Pascal parser thread - Scope to project files only, On/Off switch, warning before first start.
+
+    Project Dependencies - filter units in the project, find and highlight circular references.
 
 
 - Integration of RAD Studio and IntelliJ.
