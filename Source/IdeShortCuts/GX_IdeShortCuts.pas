@@ -223,9 +223,15 @@ procedure TfmIdeShortCuts.InitializeForm;
     begin
       ChildItem := ASource.Items[i];
       if ChildItem.Visible and (Length(Trim(ChildItem.Name)) > 0)
+{$ifdef GExpertsBPL}
+        and not SameText(ChildItem.Name, 'GExpertsBPL')
+        and not SameText(ChildItem.Name, 'WindowsMenu')
+        and not SameText(ChildItem.Name, 'GExpertBPL_Menu') then
+{$else GExpertsBPL}
         and not SameText(ChildItem.Name, 'GExperts')
         and not SameText(ChildItem.Name, 'WindowsMenu')
         and not SameText(ChildItem.Name, 'GExpert_Menu') then
+{$endif GExpertsBPL}
       begin
         ANewItem := TMenuItem.Create(ADest.GetParentMenu);
         ADest.Add(ANewItem);
@@ -524,7 +530,7 @@ begin
     Exit;
 
   RegValues := nil;
-  {$IFOPT D+} SendDebug('Checking for and applying customized IDE shortcuts'); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + ': Checking for and applying customized IDE shortcuts'); {$ENDIF}
   Settings := TGExpertsSettings.Create;
   try
     RegValues := TStringList.Create;
@@ -533,11 +539,13 @@ begin
       Exit;
 
     Settings.ReadSection(ConfigurationKey, RegValues);
-    {$IFOPT D+} if RegValues.Count > 0 then SendDebug('Setting shortcuts for ' + Trim(RegValues.Text)); {$ENDIF}
+    const tcc = RegValues.IndexOf('TotalCallCount');
+    if tcc > -1 then RegValues.Delete(tcc);
+    {$IFOPT D+} if RegValues.Count > 0 then SendDebug(ClassName + ': Setting shortcuts for ' + Trim(RegValues.Text)); {$ENDIF}
     for i := 0 to RegValues.Count - 1 do
     begin
       AMenuItemName := RegValues[i];
-      {$IFOPT D+} SendDebug('Looking for ' + AMenuItemName); {$ENDIF}
+      //{$IFOPT D+} SendDebug(ClassName + ': Looking for ' + AMenuItemName); {$ENDIF}
       AMenuItem := FindMenuByName(IDEMainMenu.Items, AMenuItemName);
       if AMenuItem <> nil then
       begin
@@ -564,7 +572,7 @@ begin
     FreeAndNil(RegValues);
     FreeAndNil(Settings);
   end;
-  {$IFOPT D+} SendDebug('Done setting IDE shortcuts'); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + ': Done setting IDE shortcuts'); {$ENDIF}
 end;
 
 procedure TIDEMenuShortCutsExpert.ResetShortCuts;
@@ -617,13 +625,13 @@ end;
 procedure TIDEMenuShortCutsExpert.OnUpdateTimer(Sender: TObject);
 begin
   Inc(FUpdateCount);
-  {$IFOPT D+} SendDebug('IDE shortcut update timer expired, calling ReadFromRegistryIDE.  Update Count: ' + IntToStr(FUpdateCount)); {$ENDIF}
+  {$IFOPT D+} SendDebug(ClassName + ': IDE shortcut update timer expired, calling ReadFromRegistryIDE.  Update Count: ' + IntToStr(FUpdateCount)); {$ENDIF}
   if FUpdateCount >= 3 then
     FUpdateTimer.Enabled := False;
   if Application.Terminated then
     Exit;
   ReadFromRegistryIDE;
-  {$IFOPT D+} SendDebug('Done processing IDE shortcut updates'); {$ENDIF}
+  //{$IFOPT D+} SendDebug(ClassName + ': Done processing IDE shortcut updates'); {$ENDIF}
 end;
 
 { TPackageLoadingNotifier }

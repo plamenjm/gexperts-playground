@@ -226,12 +226,12 @@ contains
 //  GX_IdeProjectOptionsEnhancer in '..\..\source\IDE\GX_IdeProjectOptionsEnhancer.pas',
 //  GX_IdeSearchPathEnhancer in '..\..\source\IDE\GX_IdeSearchPathEnhancer.pas',
 //  GX_IdeSearchPathFavoriteEdit in '..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas' {f_IdeSearchPathFavoriteEdit},
-//  GX_IdeShortCuts in '..\..\source\IdeShortCuts\GX_IdeShortCuts.pas' {fmIdeShortCuts}, // RegisterGX_Expert
+  GX_IdeShortCuts in '..\..\source\IdeShortCuts\GX_IdeShortCuts.pas' {fmIdeShortCuts}, // RegisterGX_Expert
 //  GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas',
   GX_IdeUtils in '..\..\source\Utils\GX_IdeUtils.pas',
 //  GX_InsertAutoTodo in '..\..\Source\AutoTodo\GX_InsertAutoTodo.pas' {fmInsertAutoTodoForm},
   GX_KbdShortCutBroker in '..\..\source\Framework\GX_KbdShortCutBroker.pas',
-//  GX_KeyboardShortcuts in '..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas' {fmGxKeyboardShortcuts},
+  GX_KeyboardShortcuts in '..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas' {fmGxKeyboardShortcuts}, // RegisterGX_Expert
 //  GX_KibitzComp in '..\..\source\Framework\GX_KibitzComp.pas',
   GX_LibrarySource in '..\..\source\Framework\GX_LibrarySource.pas',
 //  GX_Logging in '..\..\Source\Framework\GX_Logging.pas',
@@ -264,10 +264,10 @@ contains
 //  GX_ProcedureList in '..\..\source\ProcedureList\GX_ProcedureList.pas' {fmProcedureList},
 //  GX_ProcedureListOptions in '..\..\source\ProcedureList\GX_ProcedureListOptions.pas' {fmProcedureListOptions},
 //  GX_Progress in '..\..\source\Framework\GX_Progress.pas' {fmProgress},
-//  GX_ProjDepend in '..\..\source\ProjectDependencies\GX_ProjDepend.pas' {fmProjDepend},
-//  GX_ProjDependFilter in '..\..\source\ProjectDependencies\GX_ProjDependFilter.pas' {fmProjDependFilter},
-//  GX_ProjDependOptions in '..\..\Source\ProjectDependencies\GX_ProjDependOptions.pas' {fmProjDependOptions},
-//  GX_ProjDependProp in '..\..\source\ProjectDependencies\GX_ProjDependProp.pas' {fmProjDependProp},
+  GX_ProjDepend in '..\..\source\ProjectDependencies\GX_ProjDepend.pas' {fmProjDepend}, // RegisterGX_Expert
+  GX_ProjDependFilter in '..\..\source\ProjectDependencies\GX_ProjDependFilter.pas' {fmProjDependFilter},
+  GX_ProjDependOptions in '..\..\Source\ProjectDependencies\GX_ProjDependOptions.pas' {fmProjDependOptions},
+  GX_ProjDependProp in '..\..\source\ProjectDependencies\GX_ProjDependProp.pas' {fmProjDependProp},
 //  GX_ProjOptionSets in '..\..\source\ProjectOptionSets\GX_ProjOptionSets.pas' {fmProjOptionSets},
 //  GX_ProjOptMap in '..\..\source\ProjectOptionSets\GX_ProjOptMap.pas',
 //  GX_ProofreaderAutoCorrectEntry in '..\..\source\CodeProofreader\GX_ProofreaderAutoCorrectEntry.pas' {fmProofreaderAutoCorrectEntry},
@@ -297,7 +297,7 @@ contains
 //  GX_ShLwApi in '..\..\Source\Utils\GX_ShLwApi.pas',
 //  GX_SourceExport in '..\..\source\SourceExport\GX_SourceExport.pas' {fmSourceExport},
 //  GX_SourceExportOptions in '..\..\source\SourceExport\GX_SourceExportOptions.pas' {fmSourceExportOptions},
-//  GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
+  GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
   GX_StringList in '..\..\Source\Utils\GX_StringList.pas',
 //  GX_SynMemoUtils in '..\..\source\Framework\GX_SynMemoUtils.pas',
 //  GX_TabOrder in '..\..\source\TabOrder\GX_TabOrder.pas' {fmTabOrder},

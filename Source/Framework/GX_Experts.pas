@@ -119,7 +119,9 @@ var
   Index: Integer;
 begin
   Result := MaxInt - 10000;
-  if ExpertIndexLookup.Find(ClassName, Index) then
+  if not ExpertIndexLookup.Find(ClassName, Index) then
+    {$IFOPT D+} SendDebug(ClassName + ': not found in ExpertIndexLookup') {$ENDIF D+}
+  else
     Result := GXNativeInt(ExpertIndexLookup.Objects[Index]);
 end;
 
@@ -210,39 +212,71 @@ begin
 end;
 
 procedure InitExpertIndexLookup;
+// Current order (2024-10-02, probably based on units initialization order):
+// Expert Manager...
+// Set Tab Order...
+// Project Option Sets
+// Open File
+// PE Information
+// Uses Clause Manager
+// Keyboard Macro Library
+// Keyboard Shortcuts
+// IDE Menu Shortcuts
+// Hide/Show Non-Visual
+// Instant Grep
+// Go to
+// Form Hotkeys
+// Focus Code Editor
+// Find Component Reference
+// Favorite Files
+// Editor Experts
+// Components to Code
+// Component Grid...
+// Clipboard History
+// Clean Directories...
+// Class Browser
+// Editor Bookmarks
+// ASCII Chart
+// Add Dock Window
+// Project Dependencies
+// Grep
+// Code Librarian
 const
-  OldExpertOrder: array [0..29] of string = (
-  'TProcedureExpert',
+  OldExpertOrder: array [0..13] of string = (
+//  'TProcedureExpert',         - old^2, class not found
   'TExpertManagerExpert',
-  'TGrepDlgExpert',
+//  'TGrepDlgExpert',           - old^2, class not found
   'TGrepExpert',
-  'TMsgExpExpert',
-  'TBackupExpert',
+//  'TMsgExpExpert',            - old^2, class not found
+//  'TBackupExpert',            - old^2, class not found
   'TTabExpert',
-  'TCleanExpert',
-  'TClipExpert',
-  'TFilesExpert',
-  'TClassExpert',
+//  'TCleanExpert',             - old^2, class not found
+//  'TClipExpert',              - old^2, class not found
+//  'TFilesExpert',             - old^2, class not found
+//  'TClassExpert',             - old^2, class not found
   'TSourceExportExpert',
-  'TCodeLibExpert',
-  'TASCIIExpert',
-  'TPEExpert',
+//  'TCodeLibExpert',           - old^2, class not found
+//  'TASCIIExpert',             - old^2, class not found
+//  'TPEExpert',                - old^2, class not found
   'TReplaceCompExpert',
-  'TGridExpert',
-  'TShortCutExpert',
-  'TDependExpert',
-  'TLayoutExpert',
+//  'TGridExpert',              - old^2, class not found
+//  'TShortCutExpert',          - old^2, class not found
+//  'TDependExpert',            - old^2, class not found
+//  'TLayoutExpert',            - old^2, class not found
   'TToDoExpert',
   'TCodeProofreaderExpert',
   'TProjOptionSetsExpert',
-  'TCompsToCodeExpert',
-  'TCompRenameExpert',
+//  'TCompsToCodeExpert',       - old^2, class not found
+//  'TCompRenameExpert',        - old^2, class not found
   'TCopyComponentNamesExpert',
-  'TGxMenusForEditorExperts',
-  'TMacroLibExpert',
+//  'TGxMenusForEditorExperts', - old^2, class not found
+//  'TMacroLibExpert',          - old^2, class not found
   'TOpenFileExpert',
-  'TFindCompRefWizard'
-  );
+//  'TFindCompRefWizard'        - old^2, class not found
+  'TKeyboardShortcutsExpert',
+  'TIDEMenuShortCutsExpert',
+  'TFocusCodeEditorExpert',
+  'TProjectDependenciesExpert');
 var
   i: Integer;
 begin

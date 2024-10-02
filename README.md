@@ -6,36 +6,34 @@ A playground. The changes are properly described in the commit messages.
 ---
 ### Summary:
 
-- Empty GExperts, only the framework (and one expert), build as BPL package.
+- GExperts framework build as BPL package - without experts, without IDE and editor enhancements.
 
     You can rebuild and see your changes immediately without restarting RAD Studio.
 
     Some initializations and dependencies were resolved.
 
-    There minor changes in GExpertsDebugWindow.
+    Minor changes in GExpertsDebugWindow.
+
+
+- List of currently enabled/included experts: GX_FocusCodeEditor, GX_IdeShortCuts, GX_KeyboardShortcuts, GX_ProjDepend.
+
+
+- Fixed bug - With RAD Studio 12.1, 'IOTAKeyboardBinding.BindKeyboard' is called on rebuild/unload/install a 'ToolsApi' project.
+In GExperts, this triggers multiple 'Add/Remove' shortcut activities. And GExperts key mappings is removed.
 
 ---
 
 ### Ideas:
 
-- Merge 'IDE Menu Shortcuts' and 'Keyboard Shortcuts'. Plus information for Delphi default Key mappings.
+- Integration of RAD Studio and IntelliJ. (I use IntelliJ as a git client and I have to switch often between both applications).
 
+- Shortcuts - all in one place. Merge 'IDE Menu Shortcuts' and 'Keyboard Shortcuts'. Information for Delphi default Key mappings.
 
-- Reorder Experts - move up/down and sync with the menu items
+- Units initialization order (only for units with 'initialization/finalization' section). Units circular references.
+  - Project Dependencies - scope to project dir/units in the project, expand all, highlight/filter/find circular references.
+  - Uses Clause Manager and Pascal parser thread - scope to project dir/units only, On/Off switch for the background thread, (notification before the first start).
 
-
-- Uses Clause Manager / Project Dependencies
-
-    Show units initialization order. Show it only for units with 'initialization/finalization' section.
-
-    Pascal parser thread - Scope to project files only, On/Off switch, warning before first start.
-
-    Project Dependencies - filter units in the project, find and highlight circular references.
-
-
-- Integration of RAD Studio and IntelliJ.
-
-    I use IntelliJ as a git client and I have to switch often between both applications.
+- Reorder Experts (move up/down) in menu and configuration window.
 
 ---
 
