@@ -625,7 +625,6 @@ var
   i: Integer;
   KeyboardName: string;
   AShortCutItem: TGxOneKeyShortCut;
-  IsInstalling: Boolean;
 begin
   Assert(FOwner <> nil);
   Assert(FOwner.FShortCutList <> nil);
