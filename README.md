@@ -43,6 +43,8 @@ In GExperts, this triggers multiple 'Add/Remove' shortcut activities. And GExper
 
 ---
 
+![image](https://github.com/user-attachments/assets/05912e9b-4569-4c38-9734-44e4a309a983)
+
 ![image](https://github.com/user-attachments/assets/ba39f3c4-c3df-41cc-838d-4062e89a221e)
 
 ![image](https://github.com/user-attachments/assets/36542e21-a9f0-4ee0-9e20-5657c473dae2)
