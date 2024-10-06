@@ -120,7 +120,7 @@ var
 begin
   Result := MaxInt - 10000;
   if not ExpertIndexLookup.Find(ClassName, Index) then
-    {$IFOPT D+} SendDebug(ClassName + ': not found in ExpertIndexLookup') {$ENDIF D+}
+    {$IFOPT D+} SendDebugWarning(ClassName + ': not found in ExpertIndexLookup') {$ENDIF D+}
   else
     Result := GXNativeInt(ExpertIndexLookup.Objects[Index]);
 end;

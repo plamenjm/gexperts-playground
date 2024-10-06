@@ -502,12 +502,17 @@ begin
   // Fix by using timed callback for updating the ShortCut.
   FreeAndNil(FTimedSet);
   FTimedValue := Value;
-  FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
+  if not GxKeyboardShortCutBroker.UpdatingByBindKeyboard then
+    DoSetShortCut(nil)
+  else
+    FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
 end;
 
 procedure TGxMenuAction.DoSetShortCut(Sender: TObject);
+var
+  Value: TShortCut;
 begin
-  var Value := FTimedValue;
+  Value := FTimedValue;
   FTimedSet := nil;
   if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then
     IdeShortCut := nil;  // Unregisters the shortcut with the IDE
@@ -522,7 +527,7 @@ begin
     end;
   end;
 
-  inherited;
+  inherited SetShortCut(Value);
 end;
 
 { TGxToolsAction }
@@ -547,12 +552,17 @@ begin
   // Fix by using timed callback for updating the ShortCut.
   FreeAndNil(FTimedSet);
   FTimedValue := Value;
-  FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
+  if not GxKeyboardShortCutBroker.UpdatingByBindKeyboard then
+    DoSetShortCut(nil)
+  else
+    FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
 end;
 
 procedure TGxToolsAction.DoSetShortCut(Sender: TObject);
+var
+  Value: TShortCut;
 begin
-  var Value := FTimedValue;
+  Value := FTimedValue;
   FTimedSet := nil;
   // Not necessary under Delphi 5/6 since the callbacks never happen anyway
   if RunningDelphi7OrGreater then

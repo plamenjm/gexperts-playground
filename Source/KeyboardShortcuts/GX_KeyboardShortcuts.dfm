@@ -14,7 +14,7 @@ inherited fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 14
-  object sg_Actions: TStringGrid
+  object Grid: TStringGrid
     Left = 0
     Top = 0
     Width = 589
@@ -27,9 +27,9 @@ inherited fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
     RowCount = 2
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
     TabOrder = 0
-    OnDrawCell = sg_ActionsDrawCell
-    OnMouseUp = sg_ActionsMouseUp
-    OnMouseWheelDown = sg_ActionsMouseWheelDown
-    OnMouseWheelUp = sg_ActionsMouseWheelUp
+    OnDrawCell = GridDrawCell
+    OnMouseUp = GridMouseUp
+    OnMouseWheelDown = GridMouseWheelDown
+    OnMouseWheelUp = GridMouseWheelUp
   end
 end

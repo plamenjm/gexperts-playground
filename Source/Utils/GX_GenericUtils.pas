@@ -5100,9 +5100,7 @@ initialization
   end;
 
 finalization
-{$ifNdef GExpertsBPL} // Not needed for BPL? It does not show error, but why 'FreeLibrary'?
   if FLibHandle <> 0 then FreeLibrary(FLibHandle);
-{$endif GExpertsBPL}
 
 {$IFOPT D+}
   SendSeparator; // One of the very first/last units in initialization/finalization order

@@ -21,6 +21,12 @@ A playground. The changes are properly described in the commit messages.
 - Fixed bug - With RAD Studio 12.1, 'IOTAKeyboardBinding.BindKeyboard' is called on rebuild/unload/install a 'ToolsApi' project.
 In GExperts, this triggers multiple 'Add/Remove' shortcut activities. And GExperts key mappings is removed.
 
+
+- Updated GX_KeyboardShortcuts (work in progress).
+
+
+- Updated experts order in GX_Experts.ExpertIndexLookup.
+
 ---
 
 ### Ideas:

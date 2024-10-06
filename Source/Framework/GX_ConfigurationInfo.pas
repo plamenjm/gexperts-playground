@@ -663,7 +663,11 @@ end;
 
 function TConfigInfo.GExpertsIdeRootRegistryKey: string;
 const
+{$ifdef GExpertsBPL}
+  SGExpertsString = 'GExpertsBPL-1.3';
+{$else GExpertsBPL}
   SGExpertsString = 'GExperts-1.3';
+{$endif GExpertsBPL}
 begin
   Result := AddSlash(FIdeRootRegistryKey) + SGExpertsString;
 end;
