@@ -43,7 +43,6 @@ type
     // handler installation / removal is minimized.
     procedure BeginUpdate;
     procedure EndUpdate;
-    function UpdatingByBindKeyboard: Boolean;
 
     ///<summary>
     /// @param Immediate = True forces an immediate call of InstallKeyboardBindings
@@ -72,7 +71,6 @@ type
   private
     FShortCutList: TObjectList;
     FKeyboardName: string;
-    FUpdatingByBindKeyboard: Boolean;
   private
     procedure NotifyOneShortCutDestruction(AGxKeyboardShortCut: TObject);
     procedure RemoveOneKeyShortCut(AGxOneKeyShortCut: TObject);
@@ -93,7 +91,6 @@ type
 
     procedure BeginUpdate;
     procedure EndUpdate;
-    function UpdatingByBindKeyboard: Boolean;
 
     function RequestOneKeyShortCut(const ATrigger: TTriggerMethod; AShortCut: TShortCut = 0): IGxKeyboardShortCut; virtual;
     function RequestMenuShortCut(const ATrigger: TTriggerMethod; const AMenuItem: TMenuItem): IGxKeyboardShortCut; virtual; abstract;
@@ -303,11 +300,6 @@ function TGxBaseKeyboardShortCutBroker.Updating: Boolean;
 begin
   // By default, we do not support BeginUpdate / EndUpdate
   Result := False;
-end;
-
-function TGxBaseKeyboardShortCutBroker.UpdatingByBindKeyboard: Boolean;
-begin
-  Result := FUpdatingByBindKeyboard;
 end;
 
 { TGxKeyboardShortCut }
@@ -580,6 +572,7 @@ begin
   if FKeyboardBindingIndex <> InvalidIndex then begin
     IKeyboardServices := GxOtaGetKeyboardServices;
     try
+      {$IFOPT D+} SendDebugWarning(ClassName + ' IKeyboardServices.RemoveKeyboardBindings!'); {$ENDIF}
       IKeyboardServices.RemoveKeyboardBinding(FKeyboardBindingIndex);
     except
       on E: Exception do
@@ -642,20 +635,14 @@ begin
   else
     KeyboardName := PrivateGxKeyboardShortCutBroker.GetKeyboardName;
 
-  IsInstalling := TGxNativeKeyboardShortCutBroker(PrivateGxKeyboardShortCutBroker).FInstallingKeyboardBinding;
-  if not IsInstalling then PrivateGxKeyboardShortCutBroker.FUpdatingByBindKeyboard := True;
-  try
-    for i := 0 to FOwner.FShortCutList.Count-1 do
+  for i := 0 to FOwner.FShortCutList.Count-1 do
+  begin
+    AShortCutItem := FOwner.FShortCutList[i] as TGxOneKeyShortCut;
+    if AShortCutItem.ShortCut <> 0 then
     begin
-      AShortCutItem := FOwner.FShortCutList[i] as TGxOneKeyShortCut;
-      if AShortCutItem.ShortCut <> 0 then
-      begin
-        BindingServices.AddKeyBinding([AShortCutItem.ShortCut], KeyBindingHandler, nil,
-          DefaultKeyBindingsFlag, KeyboardName, AShortCutItem.MenuItemName);
-      end;
+      BindingServices.AddKeyBinding([AShortCutItem.ShortCut], KeyBindingHandler, nil,
+        DefaultKeyBindingsFlag, KeyboardName, AShortCutItem.MenuItemName);
     end;
-  finally
-    if not IsInstalling then PrivateGxKeyboardShortCutBroker.FUpdatingByBindKeyboard := False;
   end;
 end;
 

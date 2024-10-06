@@ -5,6 +5,7 @@
 {$define GExpertsBPL_NoMultiline}  // enhancement
 {$define GExpertsBPL_NoStatistics}
 {$define GExpertsBPL_NoSizeGrip}
+{$define GExpertsBPL_FixTimedSetShortCut}
 
 // Third-Party Product Defines
 // --------------------------------------------------------------------------

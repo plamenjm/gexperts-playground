@@ -502,10 +502,12 @@ begin
   // Fix by using timed callback for updating the ShortCut.
   FreeAndNil(FTimedSet);
   FTimedValue := Value;
-  if not GxKeyboardShortCutBroker.UpdatingByBindKeyboard then
-    DoSetShortCut(nil)
+{$ifdef GExpertsBPL_FixTimedSetShortCut}
+  if Value = 0 then
+    FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True)
   else
-    FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
+{$endif GExpertsBPL_FixTimedSetShortCut}
+    DoSetShortCut(nil);
 end;
 
 procedure TGxMenuAction.DoSetShortCut(Sender: TObject);
@@ -514,8 +516,10 @@ var
 begin
   Value := FTimedValue;
   FTimedSet := nil;
-  if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then
+  if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then begin
+    {$IFOPT D+} if not Assigned(Sender) and (Value = 0) then SendDebugWarning(ClassName + ': not timed SetShortCut(0)!'); {$ENDIF}
     IdeShortCut := nil;  // Unregisters the shortcut with the IDE
+  end;
 
   if Value <> 0 then begin
     if Assigned(FAssociatedMenuItem) and not Assigned(IdeShortCut) then
@@ -552,10 +556,12 @@ begin
   // Fix by using timed callback for updating the ShortCut.
   FreeAndNil(FTimedSet);
   FTimedValue := Value;
-  if not GxKeyboardShortCutBroker.UpdatingByBindKeyboard then
-    DoSetShortCut(nil)
+{$ifdef GExpertsBPL_FixTimedSetShortCut}
+  if Value = 0 then
+    FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True)
   else
-    FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
+{$endif GExpertsBPL_FixTimedSetShortCut}
+    DoSetShortCut(nil);
 end;
 
 procedure TGxToolsAction.DoSetShortCut(Sender: TObject);
@@ -567,8 +573,10 @@ begin
   // Not necessary under Delphi 5/6 since the callbacks never happen anyway
   if RunningDelphi7OrGreater then
   begin
-    if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then
+    if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then begin
+      {$IFOPT D+} if not Assigned(Sender) and (Value = 0) then SendDebugWarning(ClassName + ': not timed SetShortCut(0)!'); {$ENDIF}
       IdeShortCut := nil;  // Unregisters the shortcut with the IDE
+    end;
 
     if Value <> 0 then begin
       if not Assigned(IdeShortCut) then
