@@ -4,6 +4,8 @@
 /// stand alone tools that do not have access to the OTAPI </summary>
 unit GX_OtaUtils;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -38,7 +40,9 @@ function GxOtaGetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor = nil)
 // always returns False
 function GxOtaIsFileOpen(const AFileName: string; UseBase: Boolean = False): Boolean;
 
-function GXOtaGetIdeBaseRegistryKey: string;
+{$IFNDEF GX_STANDALONE}
+function GXOtaGetIdeBaseRegistryKey: string; // moved from GX_OtaUtils.pas to GX_VerDepConst.pas
+{$ENDIF GX_STANDALONE}
 
 // Determine is a file exists or the file's module is currently loaded in the IDE
 function GxOtaFileOrModuleExists(const AFileName: string; UseBase: Boolean = False): Boolean;
@@ -171,6 +175,7 @@ begin
   Result := False;
 end;
 
+{$IFNDEF GX_STANDALONE}
 function GXOtaGetIdeBaseRegistryKey: string;
 begin
   Result := 'Software\' + CompilerDefinedProductRegistryKey;
@@ -184,6 +189,7 @@ begin
     Assert(Result[Length(Result)] <> '\');
   end;
 end;
+{$ENDIF GX_STANDALONE}
 
 function GxOtaFileOrModuleExists(const AFileName: string; UseBase: Boolean): Boolean;
 begin

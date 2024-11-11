@@ -469,7 +469,7 @@ type
   TShowUnicodeReplaceMessage = class(TGxMsgBoxAdaptor)
   protected
     function GetMessage: string; override;
-    function ShouldShow: Boolean; override;
+    class function ShouldShow: Boolean; override;
   end;
 
   TGxResultRefreshSelectedQuestion = class(TGxQuestionBoxAdaptor)
@@ -518,7 +518,7 @@ begin
     'is recommended if any of your files fall into one of these categories.';
 end;
 
-function TShowUnicodeReplaceMessage.ShouldShow: Boolean;
+class function TShowUnicodeReplaceMessage.ShouldShow: Boolean;
 begin
   Result := RunningDelphi8OrGreater;
 end;

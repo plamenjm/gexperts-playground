@@ -262,6 +262,9 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
     {$DEFINE GX_AV_IN_CODE_FORMATTER_FIX_ENABLED}
     {$DEFINE GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
   {$ENDIF}
+  {$ifdef GX_STANDALONE}
+    //{$undef GX_IDE_IS_HIDPI_AWARE} // Incorrect form possition after TGExpertsSettings.LoadForm. See the comments in TGExpertsSettings.LoadForm.
+  {$endif GX_STANDALONE}
 {$ENDIF}
 {.$DEFINE GX_IDE_IS_HIDPI_AWARE}
 

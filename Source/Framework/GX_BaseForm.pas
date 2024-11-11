@@ -51,7 +51,11 @@ implementation
 {$R *.dfm}
 
 uses
+{$IFDEF GX_STANDALONE}
+  GX_GenericUtils;
+{$ELSE GX_STANDALONE}
   GX_GxUtils;
+{$ENDIF GX_STANDALONE}
 
 class function TfmBaseForm.Execute(_Owner: TComponent): Boolean;
 var
@@ -132,7 +136,11 @@ begin
 
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
+{$ifdef GX_STANDALONE}
+  if Assigned(Self) then SetDefaultFont(Self);
+{$else GX_STANDALONE}
   GxSetDefaultFont(Self);
+{$endif GX_STANDALONE}
   if not Assigned(OnShow) then
     OnShow := FormShow;
 end;

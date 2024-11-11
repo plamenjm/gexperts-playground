@@ -245,6 +245,51 @@ const
   'Add the information for the new Delphi version above and increase the CompilerVersion in this conditional'
 {$IFEND}
 
+{$IFDEF GX_STANDALONE}
+function GXOtaGetIdeBaseRegistryKey: string; // moved from GX_OtaUtils.pas to GX_VerDepConst.pas
+function GetIdeRootDirectory: string; // moved from GX_IdeUtils.pas to GX_VerDepConst.pas
+{$ENDIF GX_STANDALONE}
+
 implementation
+
+{$IFDEF GX_STANDALONE}
+uses
+  Windows, SysUtils, StrUtils, Forms,
+  u_dzClassUtils, GX_GenericUtils;
+
+function GXOtaGetIdeBaseRegistryKey: string;
+begin
+  Result := 'Software\' + CompilerDefinedProductRegistryKey;
+
+  if Length(Result) > 0 then begin
+    // Windows 2000 is allergic to a leading backslash
+    // in the registry key - NT4, for instance, is not.
+    if Result[1] = '\' then
+      Delete(Result, 1, 1);
+
+    Assert(Result[Length(Result)] <> '\');
+  end;
+end;
+
+function GetIdeRootDirectory: string;
+const
+  BinDirPostfix = PathDelim + 'Bin';
+begin
+  if TRegistry_TryReadString(GxOtaGetIdeBaseRegistryKey, 'RootDir', Result, HKEY_LOCAL_MACHINE) then begin
+    if DirectoryExists(Result) then begin
+      Result := AddSlash(Result);
+      Exit; //==>
+    end;
+  end;
+
+  // There is no entry in the registry or it is invalid -> use the application's exename
+  Result := RemoveSlash(ExtractFilePath(Application.ExeName));
+  if SameText(RightStr(Result, Length(BinDirPostfix)), BinDirPostfix) then begin
+    Result := DeleteRight(Result, Length(BinDirPostfix));
+    Result := AddSlash(Result);
+  end else
+    Result := '';
+end;
+{$ENDIF GX_STANDALONE}
 
 end.

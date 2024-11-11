@@ -72,7 +72,9 @@ function GetIdeFontData(var FontName: string; var FontSize: Integer): Boolean;
 
 // Return the IDE's root directory (the installation directory).
 // Returns an empty string if the information could not be retrieved.
-function GetIdeRootDirectory: string;
+{$IFNDEF GX_STANDALONE}
+function GetIdeRootDirectory: string; // moved from GX_IdeUtils.pas to GX_VerDepConst.pas
+{$ENDIF GX_STANDALONE}
 
 ///<summary>
 /// Reads the current Desktop from the registry </summary>
@@ -402,6 +404,7 @@ begin
   end;
 end;
 
+{$IFNDEF GX_STANDALONE}
 function GetIdeRootDirectory: string;
 const
   BinDirPostfix = PathDelim + 'Bin';
@@ -421,6 +424,7 @@ begin
   end else
     Result := '';
 end;
+{$ENDIF GX_STANDALONE}
 
 function GetIdeEdition: string;
 begin

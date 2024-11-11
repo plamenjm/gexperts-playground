@@ -22,7 +22,7 @@ implementation
 
 uses
   Graphics,
-  GX_GetIdeVersion,
+  //GX_GetIdeVersion,
 {$IFDEF DEBUG_GRID_DRAWING}
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
 {$ENDIF}

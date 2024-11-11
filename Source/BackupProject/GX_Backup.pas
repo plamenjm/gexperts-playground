@@ -889,18 +889,18 @@ type
   TGxContainsDirectoriesRecursiveMessage = class(TGxMsgBoxAdaptor)
   protected
     function GetMessage: string; override;
-    function GetButtons: TMsgDlgButtons; override;
-    function GetDefaultButton: TMsgDlgBtn; override;
+    class function GetButtons: TMsgDlgButtons; override;
+    class function GetDefaultButton: TMsgDlgBtn; override;
   end;
 
 { TGxContainsDirectoriesRecursiveMessage }
 
-function TGxContainsDirectoriesRecursiveMessage.GetButtons: TMsgDlgButtons;
+class function TGxContainsDirectoriesRecursiveMessage.GetButtons: TMsgDlgButtons;
 begin
   Result := [mbYes, mbNo, mbCancel];
 end;
 
-function TGxContainsDirectoriesRecursiveMessage.GetDefaultButton: TMsgDlgBtn;
+class function TGxContainsDirectoriesRecursiveMessage.GetDefaultButton: TMsgDlgBtn;
 begin
   Result := mbCancel;
 end;
@@ -919,18 +919,18 @@ type
   TGxContainsDirectoriesMessage = class(TGxMsgBoxAdaptor)
   protected
     function GetMessage: string; override;
-    function GetButtons: TMsgDlgButtons; override;
-    function GetDefaultButton: TMsgDlgBtn; override;
+    class function GetButtons: TMsgDlgButtons; override;
+    class function GetDefaultButton: TMsgDlgBtn; override;
   end;
 
 { TGxContainsDirectoriesMessage }
 
-function TGxContainsDirectoriesMessage.GetButtons: TMsgDlgButtons;
+class function TGxContainsDirectoriesMessage.GetButtons: TMsgDlgButtons;
 begin
   Result := [mbYes, mbNo, mbCancel];
 end;
 
-function TGxContainsDirectoriesMessage.GetDefaultButton: TMsgDlgBtn;
+class function TGxContainsDirectoriesMessage.GetDefaultButton: TMsgDlgBtn;
 begin
   Result := mbCancel;
 end;

@@ -83,7 +83,7 @@ type
   TUnsupportedIDEMessage = class(TGxMsgBoxAdaptor)
   protected
     function GetMessage: string; override;
-    function ShouldShow: Boolean; override;
+    class function ShouldShow: Boolean; override;
   end;
 
 var
@@ -489,7 +489,7 @@ begin
   Result := SBadIDEVersion;
 end;
 
-function TUnsupportedIDEMessage.ShouldShow: Boolean;
+class function TUnsupportedIDEMessage.ShouldShow: Boolean;
 begin
   Result := (GetBorlandIdeVersion in [
       // List IDEs here that have OTA/IDE bugs that bother GExperts

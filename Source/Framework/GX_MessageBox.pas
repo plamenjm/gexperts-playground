@@ -2,6 +2,9 @@ unit GX_MessageBox;
 
 {$I GX_CondDefine.inc}
 
+{$define GExpertsBPL_Optimization1}
+{$define GExpertsBPL_Optimization2}
+
 interface
 
 uses
@@ -24,9 +27,9 @@ type
     function GetCaption: string; virtual;
     // Returns the set of buttons that the message box
     // should feature.
-    function GetButtons: TMsgDlgButtons; virtual;
+    class function GetButtons: TMsgDlgButtons; virtual;
     // Button to be used as the default
-    function GetDefaultButton: TMsgDlgBtn; virtual;
+    class function GetDefaultButton: TMsgDlgBtn; virtual;
     // Return a unique identifier for this dialog; this
     // is used for storage in the registry.
     // By default, this is the content of Self.ClassName
@@ -38,7 +41,7 @@ type
     // suppressed.
     function IsPermanentlySuppressed: Boolean;
     // Returns whether the message box should be shown.
-    function ShouldShow: Boolean; virtual;
+    class function ShouldShow: Boolean; virtual;
     function AllowSuppress: Boolean; virtual;
   public
     class function ConfigurationKey: string;
@@ -46,8 +49,8 @@ type
 
   TGxQuestionBoxAdaptor = class(TGxMsgBoxAdaptor)
   protected
-    function GetButtons: TMsgDlgButtons; override;
-    function GetDefaultButton: TMsgDlgBtn; override;
+    class function GetButtons: TMsgDlgButtons; override;
+    class function GetDefaultButton: TMsgDlgBtn; override;
   end;
 
   TfmGxMessageBox = class(TfmBaseForm)
@@ -140,10 +143,19 @@ var
   end;
 
 begin
+{$ifdef GExpertsBPL_Optimization2} // v2: Even better, check ShouldShow before AdaptorClass.Create. Requires 'class' functions ShouldShow, GetDefaultButton, GetButtons!
+  Result := MsgDlgResults[AdaptorClass.GetDefaultButton];
+  if not AdaptorClass.ShouldShow then
+    Exit;
+{$endif GExpertsBPL_Optimization2}
   Adaptor := AdaptorClass.Create;
   Adaptor.FData := Data;
   try
     Result := MsgDlgResults[Adaptor.GetDefaultButton];
+{$ifdef GExpertsBPL_Optimization1} // v1: Check ShouldShow before IsPermanentlySuppressed, ConfigInfo.GetExpertSettings, TExpertSettingsEx.Create
+    if not Adaptor.ShouldShow then
+      Exit;
+{$endif GExpertsBPL_Optimization1}
     if Adaptor.IsPermanentlySuppressed then
       Exit;
     if Adaptor.ShouldShow then begin
@@ -196,17 +208,17 @@ begin
   Result := Settings.ReadBool(Self.ClassName, False); // Do not localize
 end;
 
-function TGxMsgBoxAdaptor.ShouldShow: Boolean;
+class function TGxMsgBoxAdaptor.ShouldShow: Boolean;
 begin
   Result := True;
 end;
 
-function TGxMsgBoxAdaptor.GetButtons: TMsgDlgButtons;
+class function TGxMsgBoxAdaptor.GetButtons: TMsgDlgButtons;
 begin
   Result := [mbOK];
 end;
 
-function TGxMsgBoxAdaptor.GetDefaultButton: TMsgDlgBtn;
+class function TGxMsgBoxAdaptor.GetDefaultButton: TMsgDlgBtn;
 const
   DefaultButton = mbOK;
 begin
@@ -230,12 +242,12 @@ end;
 
 { TGxQuestionBoxAdaptor }
 
-function TGxQuestionBoxAdaptor.GetButtons: TMsgDlgButtons;
+class function TGxQuestionBoxAdaptor.GetButtons: TMsgDlgButtons;
 begin
   Result := [mbYes, mbNo];
 end;
 
-function TGxQuestionBoxAdaptor.GetDefaultButton: TMsgDlgBtn;
+class function TGxQuestionBoxAdaptor.GetDefaultButton: TMsgDlgBtn;
 begin
   Result := mbYes;
 end;

@@ -2,6 +2,10 @@ unit GX_ConfigurationInfo;
 
 {$I GX_CondDefine.inc}
 
+{$ifdef GX_STANDALONE}
+  {$define GExpertsBPL_StandAlone} // Separate the changes from GX_STANDALONE
+{$endif GX_STANDALONE}
+
 // If GX_STANDALONE is defined, several of the methods are not available.
 // This is to make this unit compatible with a stand alone version of Grep,
 // that does not load the GExperts DLL and therefore does not need runtime
@@ -277,11 +281,14 @@ uses
   SysUtils, Math,
   u_dzVclUtils,
   GX_MessageBox, // todo: remove UI from the configuration
-  GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils, GX_VerDepConst,
+  GX_GenericUtils, GX_GenericClasses, GX_VerDepConst,
+{$ifNdef GExpertsBPL_StandAlone}
+  GX_IdeUtils, GX_OtaUtils, GX_GxUtils,
+{$endif GExpertsBPL_StandAlone}
 {$ifNdef GExpertsBPL_NoIdeEnhance}
   GX_IdeDock,
 {$endif GExpertsBPL_NoIdeEnhance}
-  GX_BaseForm, GX_GxUtils;
+  GX_BaseForm;
 
 type
   TConfigInfo = class(TSingletonInterfacedObject, IConfigInfo)
@@ -357,7 +364,7 @@ type
   TShowBadDirectoryMessage = class(TGxMsgBoxAdaptor)
   protected
     function GetMessage: string; override;
-    function ShouldShow: Boolean; override;
+    class function ShouldShow: Boolean; override;
   end;
 
 var
@@ -895,7 +902,7 @@ end;
 var
   ShownOnce: Boolean = False;
 
-function TShowBadDirectoryMessage.ShouldShow: Boolean;
+class function TShowBadDirectoryMessage.ShouldShow: Boolean;
 begin
   Result := not ShownOnce;
   // The directory must exist and be writeable to be valid.
@@ -1018,6 +1025,16 @@ begin
   WriteInteger(Section, Ident, Value);
 end;
 
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+{$ifdef GExpertsBPL_StandAlone}
+function GetProcessDpiAwareness(hProcess: THandle; out Value: HRESULT): HRESULT; WINAPI; external 'shcore.dll';
+const
+  DPI_AWARENESS_UNAWARE           = 0;
+  DPI_AWARENESS_SYSTEM_AWARE      = 1;
+  DPI_AWARENESS_PER_MONITOR_AWARE = 2;
+{$endif GExpertsBPL_StandAlone}
+{$ENDIF}
+
 procedure TGExpertsSettings.LoadForm(Form: TCustomForm; const Section: string; FormSaveFlags: TFormSaveFlags);
 var
   StorageSection: string;
@@ -1036,6 +1053,9 @@ var
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
   OrigDpi: Integer;
   NewDpi: Integer;
+{$ifdef GExpertsBPL_StandAlone}
+  DpiAware: HRESULT;
+{$endif GExpertsBPL_StandAlone}
 {$ENDIF}
 
 begin
@@ -1085,6 +1105,16 @@ begin
   end;
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
+{$ifdef GExpertsBPL_StandAlone}
+  // Incorrect form position after LoadForm.
+  //   Current monitor DPI 120. In dproj: AppDPIAwarenessMode = PerMonitorV2
+  //   After LoadForm: Form.Left = 520. After SaveForm: Form.Left = 650
+  //   in LoadForm: TScreen_GetDpiForForm(Form) = 120
+  //   in SaveForm: TScreen_GetDpiForForm(Form) = 96
+  // Undef GX_IDE_IS_HIDPI_AWARE for GS_STANDALONE, or try to fix it:
+  GetProcessDpiAwareness(GetCurrentProcess(), DpiAware); // should check the result for errors
+  if DpiAware <> DPI_AWARENESS_PER_MONITOR_AWARE then // tested only with DPI_AWARENESS_PER_MONITOR_AWARE
+{$endif GExpertsBPL_StandAlone}
   if (NewDpi > 0) and (OrigDpi > 0) and (NewDpi<> OrigDpi) then begin
     NewLeft   := MulDiv(NewLeft, NewDpi, OrigDpi);
     NewTop    := MulDiv(NewTop, NewDpi, OrigDpi);

@@ -9,7 +9,7 @@ type
   TShowMissingIconMessage = class(TGxMsgBoxAdaptor)
   protected
     function GetMessage: string; override;
-    function ShouldShow: Boolean; override;
+    class function ShouldShow: Boolean; override;
   end;
 
 implementation
@@ -31,7 +31,7 @@ end;
 var
   ShownOnce: Boolean = False;
 
-function TShowMissingIconMessage.ShouldShow: Boolean;
+class function TShowMissingIconMessage.ShouldShow: Boolean;
 begin
   Result := not ShownOnce;
   ShownOnce := True;
